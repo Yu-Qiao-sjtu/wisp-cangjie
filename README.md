@@ -16,7 +16,7 @@
 (整书理解 → 并行提取 → 三重验证 → 晋级门 → 能力卡 → 压力测试),
 把其中的方法论拆成原子化能力,再由确定性编译器打包成 **1 个 single 入口**
 或 **1 个来源路由入口 + 少量晋级 skill**。产物格式与
-[wisp-science](https://github.com/xuzhougeng/wisp-science) 的 bundled skill 完全一致,
+[Wisp Science](https://github.com/xuzhougeng/wisp-science) 的 bundled skill 完全一致,
 复制进 `~/.wisp/skills/` 即可被发现和调用。
 
 不做书摘、读后感和作者人设角色扮演 — 只做能在真实场景被 agent 调用的方法论。
@@ -94,11 +94,13 @@ books/<slug>/
 
 ## Wisp Skill 生态
 
-Wisp Cangjie 是 wisp skill 生态的"技能工厂" — 输入长内容,输出符合 house 格式的新技能:
+Wisp Cangjie 是 [Wisp](https://github.com/xuzhougeng) 生态的"技能工厂" — 输入长内容,输出符合 house 格式的新技能。
+Wisp 生态由**中国科学院徐洲更博士**开发维护:
 
 | 角色 | 项目 | 说明 |
 | --- | --- | --- |
-| 运行时 | [wisp-science](https://github.com/xuzhougeng/wisp-science) | 科研 agent 运行时、skill 商店与打包规范 |
+| 科研工作台 | [wisp-science](https://github.com/xuzhougeng/wisp-science) | 本地优先的桌面 AI 科研工作台:Python/R、MCP 生信工具、SSH/WSL/GPU 运行时,skill 商店与打包规范 |
+| 终端工作区 | [wispterm](https://github.com/xuzhougeng/wispterm) | 跨平台终端工作区(libghostty-vt),面向远程开发与 AI agent 工作流 |
 | 技能工厂 | **wisp-cangjie**(本仓库) | 把书 / 视频 / 播客蒸馏成可安装的 wisp skill |
 | 生态技能示例 | research-roadmap、manuscript-polish、nsfc-grant-writing、signaling-pathway-atlas | 同一 house 格式,已安装在本地技能目录 |
 
@@ -122,11 +124,15 @@ wisp-cangjie/
 
 ## 致谢
 
-本项目的蒸馏方法论（RIA-TV++ 流水线、能力卡体系与确定性编译工具链）源自
-[kangarooking/cangjie-skill](https://github.com/kangarooking/cangjie-skill)。
-Wisp Cangjie 是在其基础上面向 Wisp Science 生态的深度改编 —— 感谢原作者
-[kangarooking](https://github.com/kangarooking) 的开源工作，欢迎关注其微信公众号：
-**袋鼠帝AI客栈**。
+- 感谢**中国科学院徐洲更博士**（[xuzhougeng](https://github.com/xuzhougeng)）开发的
+  [wisp-science](https://github.com/xuzhougeng/wisp-science) 与
+  [wispterm](https://github.com/xuzhougeng/wispterm) —— 本仓库蒸馏产物的格式规范、
+  store 校验与运行宿主均来自 Wisp 生态。
+- 本项目的蒸馏方法论（RIA-TV++ 流水线、能力卡体系与确定性编译工具链）源自
+  [kangarooking/cangjie-skill](https://github.com/kangarooking/cangjie-skill)。
+  Wisp Cangjie 是在其基础上面向 Wisp Science 生态的深度改编 —— 感谢原作者
+  [kangarooking](https://github.com/kangarooking) 的开源工作，欢迎关注其微信公众号：
+  **袋鼠帝AI客栈**。
 
 ## License
 

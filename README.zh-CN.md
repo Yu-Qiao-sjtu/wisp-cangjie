@@ -75,6 +75,7 @@ cp -r wisp-cangjie ~/.wisp/skills/
 
 配套参考：
 
+- `docs/TUTORIAL.zh-CN.md` — **从这里开始**：第一次蒸馏的上手教程（从零到安装）；
 - `references/extractors/` — 5 个提取器 prompt（框架 / 原则 / 案例 / 反例 / 术语）；
 - `references/templates/` — 各阶段产出模板；
 - `scripts/distill.py` — 确定性 CLI（`doctor` / `compile` / `replan-output` / `update` / `repair` / `rollback` / `eval`），用法 `python scripts/distill.py --help`；

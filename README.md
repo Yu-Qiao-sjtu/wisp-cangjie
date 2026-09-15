@@ -61,6 +61,7 @@ The manual is layered — go deeper only as needed:
 
 Also see:
 
+- `docs/TUTORIAL.en.md` — **start here**: a first-distillation walkthrough from zero to installed;
 - `references/extractors/` — 5 extractor prompts (framework / principle / case / counter-example / glossary);
 - `references/templates/` — output templates for each stage;
 - `scripts/distill.py` — deterministic CLI (`doctor` / `compile` / `replan-output` / `update` / `repair` / `rollback` / `eval`); run `python scripts/distill.py --help`;

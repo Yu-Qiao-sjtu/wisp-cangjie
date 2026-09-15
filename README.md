@@ -3,136 +3,124 @@
 
 # Wisp Cangjie
 
-**把书、长视频、播客蒸馏成可调用的 Wisp Skill · The skill factory of the Wisp Science ecosystem**
+**Distill books, long videos, and podcasts into callable Wisp Skills · The skill factory of the Wisp ecosystem**
 
-`RIA-TV++ 蒸馏流水线` · `确定性编译 CLI` · `wisp house 格式`
+`RIA-TV++ distillation pipeline` · `Deterministic compile CLI` · `Wisp house format`
+
+[English](README.md) · [简体中文](README.zh-CN.md)
 </div>
 
-## 这是什么
+## Acknowledgments
 
-仓颉造字,把经验固化成可传承的符号;Wisp Cangjie 把长内容里的方法论蒸馏成 agent 可调用的 skill。
+- Wisp Cangjie is built for the Wisp ecosystem created by **Dr. Zhougeng Xu** ([xuzhougeng](https://github.com/xuzhougeng), Chinese Academy of Sciences) — [wisp-science](https://github.com/xuzhougeng/wisp-science) and [wispterm](https://github.com/xuzhougeng/wispterm). The format specification, store validation, and runtime host of everything distilled here come from the Wisp ecosystem.
+- The distillation methodology in this project (the RIA-TV++ pipeline, the capability-card system, and the deterministic compile toolchain) originates from [kangarooking/cangjie-skill](https://github.com/kangarooking/cangjie-skill). Wisp Cangjie is a deep adaptation of that work for the Wisp Science ecosystem — many thanks to the original author [kangarooking](https://github.com/kangarooking); his WeChat official account is **袋鼠帝AI客栈**.
 
-给它一本书、一份长视频转写、一期播客或一门课程,它会走完一条六阶段流水线
-(整书理解 → 并行提取 → 三重验证 → 晋级门 → 能力卡 → 压力测试),
-把其中的方法论拆成原子化能力,再由确定性编译器打包成 **1 个 single 入口**
-或 **1 个来源路由入口 + 少量晋级 skill**。产物格式与
-[Wisp Science](https://github.com/xuzhougeng/wisp-science) 的 bundled skill 完全一致,
-复制进 `~/.wisp/skills/` 即可被发现和调用。
+## What is this
 
-不做书摘、读后感和作者人设角色扮演 — 只做能在真实场景被 agent 调用的方法论。
+Cangjie — the legendary four-eyed scribe — turned experience into inheritable symbols. Wisp Cangjie turns the methodologies inside long-form content into skills an agent can actually call: it breaks them down into **atomic, agent-invocable capabilities**, then compiles them into the right number of house-format skills and installs them into a Wisp skill directory.
 
-## 快速上手
+Give it a book, a video transcript, a podcast episode, or a course, and it walks a six-stage pipeline (overview → parallel extraction → triple verification → promotion gate → capability cards → pressure test), then deterministically compiles the result into **one single entry** or **one router entry plus a few promoted skills**. The output is fully format-compatible with the bundled skills of [Wisp Science](https://github.com/xuzhougeng/wisp-science) — drop it into `~/.wisp/skills/` and it is discoverable.
 
-对装好本 skill 的 wisp agent 说:
+It does not do book summaries, book reviews, or author-persona role-play — only methodologies that can be invoked by an agent in real situations.
+
+## Quick start
+
+Ask a Wisp agent that has this skill installed:
 
 ```text
-帮我把《穷查理宝典》蒸馏成 skill
-把这个播客的文字稿蒸馏成 skill: <path>
-拆书: <book.txt>,做成 wisp skill
+Distill "Poor Charlie's Almanack" into skills
+Distill this podcast transcript into skills: <path>
+Turn this book into a wisp skill: <book.txt>
 ```
 
-流水线自带断点续跑(`PIPELINE_STATE.md`)、三处用户确认门(骨架 / 入选名单 / 输出模式)
-与 8 条质量红线。产物附带回归评测用例(`test-prompts.json` / `output_cases`),
-后续修订 skill 时重跑评测,防止触发与输出质量回退。
+The pipeline supports resume-from-checkpoint (`PIPELINE_STATE.md`), three user confirmation gates (book skeleton / shortlist / output mode), and 8 hard quality gates. Deliverables ship with regression eval cases (`test-prompts.json` / `output_cases`) so later revisions can re-run the evals and prevent quality drift.
 
-## 安装
+## Installation
 
-方式一 — 克隆后复制到 wisp 用户级技能目录(所有项目可用):
+Option 1 — clone and copy into the user-level Wisp skill directory (available to all projects):
 
 ```bash
 git clone https://github.com/Yu-Qiao-sjtu/wisp-cangjie.git
 cp -r wisp-cangjie ~/.wisp/skills/
 ```
 
-方式二 — 从 wisp store 安装:选择本仓库根目录的 `wisp-cangjie` 包。
+Option 2 — install from the Wisp store: select the `wisp-cangjie` package at this repository's root.
 
-依赖:`python` + `pyyaml`(必需);`tiktoken`、`jsonschema`(可选,缺失时自动降级)。
-环境自检:`python scripts/distill.py doctor`。
+Dependencies: `python` + `pyyaml` (required); `tiktoken` / `jsonschema` (optional, auto-degrade when missing).
+Environment self-check: `python scripts/distill.py doctor`.
 
-## 使用手册
+## User manual
 
-手册分三层,按需往下查:
+The manual is layered — go deeper only as needed:
 
-| 层 | 文件 | 给谁看 | 内容 |
+| Layer | File | Audience | Content |
 | --- | --- | --- | --- |
-| ① 项目手册 | `README.md`(本文件) | 使用者 | 这是什么、怎么装、怎么触发、生态定位 |
-| ② 技能入口 | `SKILL.md` | wisp agent | 何时用、输入要求、六阶段工作流、8 条质量红线、行为边界。**wisp 加载技能时读的就是它** |
-| ③ 阶段细则 | `references/methodology/`(9 篇 SOP) | wisp agent | 每个阶段的具体执行方法:Adler 整书理解、5 提取器并行、三重验证、晋级门、RIA++ 能力卡、压力测试、编译交付 |
+| ① Project handbook | `README.md` (this file) | Users | What it is, how to install, how to trigger, ecosystem position |
+| ② Skill entry | `SKILL.md` | The Wisp agent | When to use, inputs, six-stage workflow, 8 hard gates, boundaries. **This is what the runtime loads** |
+| ③ Stage SOPs | `references/methodology/` (9 docs) | The Wisp agent | Per-stage details: Adler overview, 5 parallel extractors, triple verification, promotion gate, RIA++ capability cards, pressure test, delivery |
 
-配套参考:
+Also see:
 
-- `references/extractors/` — 5 个提取器 prompt(框架 / 原则 / 案例 / 反例 / 术语);
-- `references/templates/` — 各阶段产出模板;
-- `scripts/distill.py` — 确定性 CLI(`doctor` / `compile` / `replan-output` / `update` / `repair` / `rollback` / `eval`),用法 `python scripts/distill.py --help`;
-- `validation/README.md` — 如何用 wisp-science 的测试套件校验本包。
+- `references/extractors/` — 5 extractor prompts (framework / principle / case / counter-example / glossary);
+- `references/templates/` — output templates for each stage;
+- `scripts/distill.py` — deterministic CLI (`doctor` / `compile` / `replan-output` / `update` / `repair` / `rollback` / `eval`); run `python scripts/distill.py --help`;
+- `validation/README.md` — how to validate this package with the Wisp Science test suite.
 
-## 这是 Skill,不是 Agent
+## A Skill, not an Agent
 
-**Wisp Cangjie 是一个 Skill(技能包),不是 Agent。** 它是"教 wisp agent 学会拆书蒸馏的一套流程知识 + 确定性工具箱":
+**Wisp Cangjie is a Skill (a skill package), not an Agent.** It is process knowledge plus a deterministic toolbox that teaches a Wisp agent how to distill content:
 
-- **Skill 本体**(`SKILL.md` + `references/`)是教科书和 SOP,自己不会动;
-- **`scripts/`** 是被动的确定性工具:编译、评测、原子发布、回滚 — 只做编排和校验,**不自己跑模型**;
-- 真正干活的是 **wisp 这个 Agent**:它加载本技能后按 SOP 执行 — 读文本、调模型蒸馏、在阶段确认点询问用户;并行提取用的是宿主自身的 sub-agent 能力(不支持时自动串行降级)。
+- The **skill body** (`SKILL.md` + `references/`) is the textbook and SOP — it does nothing by itself;
+- **`scripts/`** are passive deterministic tools: compile, evaluate, atomically publish, roll back — orchestration and checks only, they **never call a model**;
+- The **Wisp agent** does the actual work: it loads this skill, follows the SOP, reads the text, distills with its model, and asks the user at confirmation gates. Parallel extraction uses the host's own sub-agent capability (serial fallback when unavailable).
 
-类比:wisp 是厨师(Agent),Wisp Cangjie 是一本带量勺和计时器的菜谱(Skill)。这也是为什么它装在 `~/.wisp/skills/` 下、能通过 wisp store 校验 — 它是生态中的一个技能包,只是这个技能的用途是**生产更多技能**。
+Analogy: Wisp is the chef (Agent); Wisp Cangjie is a recipe book with measuring spoons and a timer (Skill). That is why it lives in `~/.wisp/skills/` and passes the Wisp store inspection — it is a skill package whose purpose is to **produce more skills**.
 
-## 产出结构
+## Output structure
 
 ```text
 books/<slug>/
-├── PIPELINE_STATE.md          # 断点续跑状态
-├── BOOK_OVERVIEW.md           # 整书理解(骨架/术语/批判)
-├── verified.md                # 通过三重验证的单元
-├── coverage-audit.md          # 关键任务覆盖审计
-├── GLOSSARY.md / DIGEST.md    # 术语词典 / 面向读者的精华长文
-├── candidates/  rejected/     # 审计轨迹
-└── .distill/capabilities/     # Capability Bundle(唯一编译事实源)
-    ├── verified.yaml          # 能力元数据(assets/schemas/capability-bundle.schema.json)
-    ├── cards/<slug>.md        # RIA++ 能力卡(R/I/A1/A2/E/B)
-    └── destinations.json      # promoted / router 去向映射
+├── PIPELINE_STATE.md          # resume-from-checkpoint state
+├── BOOK_OVERVIEW.md           # whole-book understanding (skeleton/terms/critique)
+├── verified.md                # units that passed triple verification
+├── coverage-audit.md          # key-task coverage audit
+├── GLOSSARY.md / DIGEST.md    # glossary / reader-facing digest
+├── candidates/  rejected/     # audit trail
+└── .distill/capabilities/     # Capability Bundle (single source of truth)
+    ├── verified.yaml          # capability metadata (assets/schemas/capability-bundle.schema.json)
+    ├── cards/<slug>.md        # RIA++ capability cards (R/I/A1/A2/E/B)
+    └── destinations.json      # promoted / router destination map
 ```
 
-## Wisp Skill 生态
+Deliverables are sanitized: full provenance (book title, author, chapter titles, verbatim quotes) stays only in the local `books/<slug>/` audit trail — installed or published output never reveals the source document's identity.
 
-Wisp Cangjie 是 [Wisp](https://github.com/xuzhougeng) 生态的"技能工厂" — 输入长内容,输出符合 house 格式的新技能。
-Wisp 生态由**中国科学院徐洲更博士**开发维护:
+## Wisp Skill ecosystem
 
-| 角色 | 项目 | 说明 |
+Wisp Cangjie is the "skill factory" of the [Wisp](https://github.com/xuzhougeng) ecosystem — long-form content in, house-format skills out. The Wisp ecosystem is developed and maintained by **Dr. Zhougeng Xu**:
+
+| Role | Project | Description |
 | --- | --- | --- |
-| 科研工作台 | [wisp-science](https://github.com/xuzhougeng/wisp-science) | 本地优先的桌面 AI 科研工作台:Python/R、MCP 生信工具、SSH/WSL/GPU 运行时,skill 商店与打包规范 |
-| 终端工作区 | [wispterm](https://github.com/xuzhougeng/wispterm) | 跨平台终端工作区(libghostty-vt),面向远程开发与 AI agent 工作流 |
-| 技能工厂 | **wisp-cangjie**(本仓库) | 把书 / 视频 / 播客蒸馏成可安装的 wisp skill |
-| 生态技能示例 | research-roadmap、manuscript-polish、nsfc-grant-writing、signaling-pathway-atlas | 同一 house 格式,已安装在本地技能目录 |
+| Research workbench | [wisp-science](https://github.com/xuzhougeng/wisp-science) | Local-first desktop AI research workbench: Python/R, MCP bioinformatics tools, SSH/WSL/GPU runtimes, skill store and packaging spec |
+| Terminal workspace | [wispterm](https://github.com/xuzhougeng/wispterm) | Cross-platform terminal workspace (libghostty-vt) for remote development and AI agent workflows |
+| Skill factory | **wisp-cangjie** (this repo) | Distills books / videos / podcasts into installable Wisp skills |
+| Example skills | research-roadmap, manuscript-polish, nsfc-grant-writing, signaling-pathway-atlas | Same house format, installed locally |
 
-蒸馏出的每个 skill 都自带 `SKILL.md` + `references/` + `scripts/`,
-放进 `~/.wisp/skills/` 即进入生态 — 蒸馏越多,生态越繁茂。
+Every distilled skill ships with `SKILL.md` + `references/` + `scripts/` — drop it into `~/.wisp/skills/` and it joins the ecosystem. The more you distill, the richer it grows.
 
-## 包结构
+## Package layout
 
 ```text
 wisp-cangjie/
-├── SKILL.md                   # 技能入口(When to use / Inputs / Workflow / Boundaries)
+├── SKILL.md                   # skill entry (When to use / Inputs / Workflow / Boundaries)
 ├── references/
-│   ├── methodology/           # 六阶段 SOP(00-overview + 01~07)
-│   ├── extractors/            # 5 个并行提取器 prompt
-│   └── templates/             # 产出模板
-├── scripts/                   # distill.py 编译/评测/更新/修复/回滚 CLI + 15 个确定性脚本
+│   ├── methodology/           # six-stage SOPs (00-overview + 01~07)
+│   ├── extractors/            # 5 parallel extractor prompts
+│   └── templates/             # output templates
+├── scripts/                   # distill.py compile/eval/update/repair/rollback CLI + 15 deterministic scripts
 └── assets/
-    ├── logo.svg
-    └── schemas/               # Capability Bundle / 评测 / 契约 JSON Schema
+    ├── logo.svg / logo.png
+    └── schemas/               # Capability Bundle / eval / contract JSON Schemas
 ```
-
-## 致谢
-
-- 感谢**中国科学院徐洲更博士**（[xuzhougeng](https://github.com/xuzhougeng)）开发的
-  [wisp-science](https://github.com/xuzhougeng/wisp-science) 与
-  [wispterm](https://github.com/xuzhougeng/wispterm) —— 本仓库蒸馏产物的格式规范、
-  store 校验与运行宿主均来自 Wisp 生态。
-- 本项目的蒸馏方法论（RIA-TV++ 流水线、能力卡体系与确定性编译工具链）源自
-  [kangarooking/cangjie-skill](https://github.com/kangarooking/cangjie-skill)。
-  Wisp Cangjie 是在其基础上面向 Wisp Science 生态的深度改编 —— 感谢原作者
-  [kangarooking](https://github.com/kangarooking) 的开源工作，欢迎关注其微信公众号：
-  **袋鼠帝AI客栈**。
 
 ## License
 

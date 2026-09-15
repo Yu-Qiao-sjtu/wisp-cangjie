@@ -123,6 +123,18 @@ def build_entry_md(bundle: dict, variant: str) -> str:
     principles = "\n".join(f"{i}. {p}" for i, p in enumerate(e["core_principles"], 1))
     out_of_scope = "\n".join(f"- {x}" for x in e["out_of_scope"])
     stops = "\n".join(f"- {x}" for x in e["stop_conditions"])
+    prereq = e.get("prerequisites") or []
+    prereq_block = ""
+    if prereq:
+        items = "\n".join(f"{i}. {p}" for i, p in enumerate(prereq, 1))
+        prereq_block = f"""
+## 运行前置条件（必须由用户完成/提供的部分）
+
+{items}
+
+以上环节 AI 无法代劳或需要用户材料时，**先向用户说明并等待提供，不要跳过或臆造数据**。
+
+"""
 
     body = f"""# {book['title']} — {'全书能力入口' if variant == 'single' else '来源路由入口（compact pack）'}
 
@@ -131,7 +143,7 @@ def build_entry_md(bundle: dict, variant: str) -> str:
 **适用**：与本书能力域相关的咨询与任务（见下方路由表的意图列）。
 **不适用**：
 {out_of_scope}
-
+{prereq_block}
 ## 核心原则（常驻速览，概览类问题读到这里即可回答）
 
 {principles}

@@ -4,46 +4,124 @@
   "title": "Distill Capability Bundle (verified.yaml)",
   "description": "唯一可编译事实源。Agent/RIA-TV++ 蒸馏产出本文件 + cards/*.md，single 与 pack 只做确定性编译。",
   "type": "object",
-  "required": ["schema_version", "bundle_id", "book", "entry", "router_entry", "promotion_budget", "capabilities"],
+  "required": [
+    "schema_version",
+    "bundle_id",
+    "book",
+    "entry",
+    "router_entry",
+    "promotion_budget",
+    "capabilities"
+  ],
   "properties": {
-    "schema_version": { "const": 1 },
-    "bundle_id": { "type": "string", "pattern": "^bundle\\.[a-z0-9-]+$" },
+    "schema_version": {
+      "const": 1
+    },
+    "bundle_id": {
+      "type": "string",
+      "pattern": "^bundle\\.[a-z0-9-]+$"
+    },
     "book": {
       "type": "object",
-      "required": ["title", "source_pack"],
+      "required": [
+        "title",
+        "source_pack"
+      ],
       "properties": {
-        "title": { "type": "string" },
-        "author": { "type": "string" },
-        "source_pack": { "type": "string" },
-        "baseline_tag": { "type": "string" }
+        "title": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "source_pack": {
+          "type": "string"
+        },
+        "baseline_tag": {
+          "type": "string"
+        }
       }
     },
     "entry": {
       "type": "object",
       "description": "single 模式主入口（人工/Agent 确认，编译器不猜测）",
-      "required": ["name", "description", "core_principles", "out_of_scope", "stop_conditions"],
+      "required": [
+        "name",
+        "description",
+        "core_principles",
+        "out_of_scope",
+        "stop_conditions"
+      ],
       "properties": {
-        "name": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
-        "description": { "type": "string", "minLength": 40 },
-        "core_principles": { "type": "array", "minItems": 3, "maxItems": 7, "items": { "type": "string" } },
-        "out_of_scope": { "type": "array", "minItems": 1, "items": { "type": "string" } },
-        "stop_conditions": { "type": "array", "minItems": 1, "items": { "type": "string" } }
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 40
+        },
+        "core_principles": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 7,
+          "items": {
+            "type": "string"
+          }
+        },
+        "out_of_scope": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "stop_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "prerequisites": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "运行前置条件：必须由用户完成或提供的材料/操作，编译为入口 SKILL.md 的「运行前置条件」章节"
+        }
       }
     },
     "router_entry": {
       "type": "object",
       "description": "compact pack 来源路由入口",
-      "required": ["name", "description"],
+      "required": [
+        "name",
+        "description"
+      ],
       "properties": {
-        "name": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
-        "description": { "type": "string", "minLength": 40 }
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 40
+        }
       }
     },
-    "promotion_budget": { "type": "integer", "minimum": 2, "default": 8, "description": "可发现入口总预算，含 1 个来源路由入口" },
+    "promotion_budget": {
+      "type": "integer",
+      "minimum": 2,
+      "default": 8,
+      "description": "可发现入口总预算，含 1 个来源路由入口"
+    },
     "capabilities": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "urn:distill:schemas:capability.schema.json" }
+      "items": {
+        "$ref": "urn:distill:schemas:capability.schema.json"
+      }
     }
   }
 }

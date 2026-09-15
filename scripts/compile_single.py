@@ -128,20 +128,29 @@ def build_entry_md(bundle: dict, variant: str) -> str:
     if prereq:
         items = "\n".join(f"{i}. {p}" for i, p in enumerate(prereq, 1))
         confirm_lines = "\n".join(f"  {i}. {p} → 已具备 / 缺失？" for i, p in enumerate(prereq, 1))
-        pointer = "\n各输入的具体获取方法（数据库导出步骤、无订阅替代方案、本地语料模式）见 `references/input-guide.md`。\n" if e.get("input_guide") else "\n"
+        routes = e.get("input_routes") or []
+        if routes:
+            route_line = "｜".join(routes)
+            scope_line = "用户确认可用材料与输入路线之前"
+            pointer = ("\n各输入的具体获取方法见 `references/input-guide.md`。\n" if e.get("input_guide") else "\n")
+            route_footer = (f"> （路线操作步骤见 `references/input-guide.md`）\n" if e.get("input_guide") else "")
+        else:
+            route_line = "A（Scopus 导出）｜ B（替代数据库，见 input-guide）｜ C（本地语料，将声明覆盖限制）"
+            scope_line = "用户确认可用材料与输入路线（A：数据库导出 / B：替代数据库 / C：本地语料并声明覆盖限制）之前"
+            pointer = "\n各输入的具体获取方法（数据库导出步骤、无订阅替代方案、本地语料模式）见 `references/input-guide.md`。\n" if e.get("input_guide") else "\n"
+            route_footer = "> （路线 A/B 的操作步骤见 `references/input-guide.md`）\n" if e.get("input_guide") else ""
         prereq_block = f"""
 ## 运行前置条件（必须由用户完成/提供的部分）
 
 {items}
 {pointer}
-**开始前必做（强制）**：激活本技能后、执行任何分析之前，必须先向用户出示下方「输入确认卡」并等待答复；用户确认可用材料与输入路线（A：数据库导出 / B：替代数据库 / C：本地语料并声明覆盖限制）之前，不得开始工作，也不得默认替用户选择路线。
+**开始前必做（强制）**：激活本技能后、执行任何分析之前，必须先向用户出示下方「输入确认卡」并等待答复；{scope_line}，不得开始工作，也不得默认替用户选择路线。
 
 > 📋 输入确认卡（原样出示给用户）
 > 请逐条确认以下输入的状态，并选择输入路线：
 {confirm_lines}
-> 输入路线：A（Scopus 导出）｜ B（替代数据库，见 input-guide）｜ C（本地语料，将声明覆盖限制）
-> （路线 A/B 的操作步骤见 `references/input-guide.md`）
-
+> 输入路线：{route_line}
+{route_footer}
 以上环节 AI 无法代劳或需要用户材料时，**先向用户说明并等待提供，不要跳过或臆造数据**；用户选择路线 C 时，所有"未见报道/空白"类结论必须显式限定在语料范围内。
 
 """

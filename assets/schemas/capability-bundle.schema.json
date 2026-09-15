@@ -92,7 +92,14 @@
         },
         "input_guide": {
           "type": "string",
-          "description": "输入获取指南（Markdown）：编译为 references/input-guide.md，教用户自行准备各阶段输入（数据库导出步骤/替代方案/本地语料模式）"
+          "description": "可选: markdown, 渲染为 references/input-guide.md"
+        },
+        "input_routes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "可选: 输入确认卡的输入路线选项列表(如 A/B/C 各一项); 缺省时沿用内置 Scopus/替代数据库/本地语料三路线文案"
         }
       }
     },

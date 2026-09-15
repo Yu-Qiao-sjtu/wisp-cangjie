@@ -25,6 +25,15 @@ the boundary instead of accepting the task.
 Require research material (Word, PDF, Markdown, or pasted text). If it is
 missing, ask for it and pause; an unanswered question is not consent.
 
+**Model requirements**: the acceptance gate in step 5 requires actually
+looking at the rendered figure, so a **vision-capable model is required**
+(已知表现良好：GPT-5.6-sol／High 等带视觉能力的模型；以能力为准，不绑定具体型号).
+A text-only model cannot pass the delivery gate — it must stop after the
+checker and deliver the SVG marked 未完成视觉验收, never claiming a visual
+review it did not perform. Long-document reading ability is required for
+thesis- and grant-scale material. If the runtime model lacks vision, state
+the missing capability and pause the acceptance step.
+
 Before the first proposal, node sketch, or topology, confirm three things in
 one message and wait for the reply:
 
@@ -89,7 +98,11 @@ the material, but produce no scoped plan or final figure.
    content change is truly needed, ask about that exact difference only.
 4. Read [布局与内容原则](references/layout-principles.md) and choose the
    layout; read [SVG 工程规范](references/svg-engineering.md) for font
-   selection, text measurement, drawing order, and the routing rules. Route
+   selection, text measurement, drawing order, and the routing rules. Apply
+   the canonical default styling from
+   [默认模板规格](references/style-defaults.md); a user-supplied reference
+   figure or PPT template overrides it through the extraction protocol, and
+   everything it does not specify falls back to these defaults. Route
    connections by the hard rules: adjacent cards connect boundary-to-boundary
    with one direct line (vertical when centers align; a single short slant is
    acceptable for slightly offset neighbors) — never compensating doglegs;

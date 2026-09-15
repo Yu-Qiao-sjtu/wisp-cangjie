@@ -4,6 +4,8 @@
 
 - 附带生态技能 `skills/research-roadmap/`：论文／报告／基金技术路线图绘制（SVG + PNG，按需可编辑 PPT / draw.io）。布线硬规则由随附 `scripts/check_graph.py` 强制（多段路由斜向段＝ERROR、短间距拐弯＝WARN）。
 - 新增 `docs/technical-roadmap-experience.zh-CN.md`：一次真实基金技术路线图交付的完整返工教训与固化规则对照。
+- research-roadmap 增补模型能力要求：验收门**必须有视觉能力模型**（如 GPT-5.6-sol／High，以能力为准不绑定型号）；纯文本模型只能交付标注"未完成视觉验收"的 SVG。
+- 新增 `references/style-defaults.md` 集中默认模板规格（SVG 配色字号、PPT 双字体 10 号／A4 页面／无阴影等），用户模板按提取协议覆盖，未覆盖项回退默认值。
 
 ## 1.0.0 — 2026-09-15
 

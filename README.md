@@ -120,6 +120,14 @@ wisp-cangjie/
     └── schemas/               # Capability Bundle / 评测 / 契约 JSON Schema
 ```
 
+## 致谢
+
+本项目的蒸馏方法论（RIA-TV++ 流水线、能力卡体系与确定性编译工具链）源自
+[kangarooking/cangjie-skill](https://github.com/kangarooking/cangjie-skill)。
+Wisp Cangjie 是在其基础上面向 Wisp Science 生态的深度改编 —— 感谢原作者
+[kangarooking](https://github.com/kangarooking) 的开源工作，欢迎关注其微信公众号：
+**袋鼠帝AI客栈**。
+
 ## License
 
 Apache-2.0

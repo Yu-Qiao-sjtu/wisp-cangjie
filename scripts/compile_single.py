@@ -127,11 +127,12 @@ def build_entry_md(bundle: dict, variant: str) -> str:
     prereq_block = ""
     if prereq:
         items = "\n".join(f"{i}. {p}" for i, p in enumerate(prereq, 1))
+        pointer = "\n各输入的具体获取方法（数据库导出步骤、无订阅替代方案、本地语料模式）见 `references/input-guide.md`。\n" if e.get("input_guide") else "\n"
         prereq_block = f"""
 ## 运行前置条件（必须由用户完成/提供的部分）
 
 {items}
-
+{pointer}
 以上环节 AI 无法代劳或需要用户材料时，**先向用户说明并等待提供，不要跳过或臆造数据**。
 
 """
@@ -203,6 +204,9 @@ def build_tree(bundle_dir: Path, variant: str) -> dict[str, str]:
             (bundle_dir / cap["card"]).read_text(encoding="utf-8") + resource_links(cap, "../../"))
     files["references/capability-index.md"] = build_index_md(caps)
     files["references/cheatsheet.md"] = build_cheatsheet_md(caps, bundle["book"])
+    guide = (bundle.get("entry") or {}).get("input_guide")
+    if guide:
+        files["references/input-guide.md"] = guide.strip() + "\n"
 
     available = {p.removeprefix("references/") for p in files if p.startswith("references/")}
     for name in ("overview.md", "glossary.md"):

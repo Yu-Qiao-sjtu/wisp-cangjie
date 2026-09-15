@@ -89,6 +89,10 @@
             "type": "string"
           },
           "description": "运行前置条件：必须由用户完成或提供的材料/操作，编译为入口 SKILL.md 的「运行前置条件」章节"
+        },
+        "input_guide": {
+          "type": "string",
+          "description": "输入获取指南（Markdown）：编译为 references/input-guide.md，教用户自行准备各阶段输入（数据库导出步骤/替代方案/本地语料模式）"
         }
       }
     },

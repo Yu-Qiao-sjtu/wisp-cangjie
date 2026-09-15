@@ -37,7 +37,7 @@
 
 ## 安装
 
-方式一 — 复制到 wisp 用户级技能目录(所有项目可用):
+方式一 — 克隆后复制到 wisp 用户级技能目录(所有项目可用):
 
 ```bash
 git clone https://github.com/Yu-Qiao-sjtu/wisp-cangjie.git
@@ -48,6 +48,33 @@ cp -r wisp-cangjie ~/.wisp/skills/
 
 依赖:`python` + `pyyaml`(必需);`tiktoken`、`jsonschema`(可选,缺失时自动降级)。
 环境自检:`python scripts/distill.py doctor`。
+
+## 使用手册
+
+手册分三层,按需往下查:
+
+| 层 | 文件 | 给谁看 | 内容 |
+| --- | --- | --- | --- |
+| ① 项目手册 | `README.md`(本文件) | 使用者 | 这是什么、怎么装、怎么触发、生态定位 |
+| ② 技能入口 | `SKILL.md` | wisp agent | 何时用、输入要求、六阶段工作流、8 条质量红线、行为边界。**wisp 加载技能时读的就是它** |
+| ③ 阶段细则 | `references/methodology/`(9 篇 SOP) | wisp agent | 每个阶段的具体执行方法:Adler 整书理解、5 提取器并行、三重验证、晋级门、RIA++ 能力卡、压力测试、编译交付 |
+
+配套参考:
+
+- `references/extractors/` — 5 个提取器 prompt(框架 / 原则 / 案例 / 反例 / 术语);
+- `references/templates/` — 各阶段产出模板;
+- `scripts/distill.py` — 确定性 CLI(`doctor` / `compile` / `replan-output` / `update` / `repair` / `rollback` / `eval`),用法 `python scripts/distill.py --help`;
+- `validation/README.md` — 如何用 wisp-science 的测试套件校验本包。
+
+## 这是 Skill,不是 Agent
+
+**Wisp Cangjie 是一个 Skill(技能包),不是 Agent。** 它是"教 wisp agent 学会拆书蒸馏的一套流程知识 + 确定性工具箱":
+
+- **Skill 本体**(`SKILL.md` + `references/`)是教科书和 SOP,自己不会动;
+- **`scripts/`** 是被动的确定性工具:编译、评测、原子发布、回滚 — 只做编排和校验,**不自己跑模型**;
+- 真正干活的是 **wisp 这个 Agent**:它加载本技能后按 SOP 执行 — 读文本、调模型蒸馏、在阶段确认点询问用户;并行提取用的是宿主自身的 sub-agent 能力(不支持时自动串行降级)。
+
+类比:wisp 是厨师(Agent),Wisp Cangjie 是一本带量勺和计时器的菜谱(Skill)。这也是为什么它装在 `~/.wisp/skills/` 下、能通过 wisp store 校验 — 它是生态中的一个技能包,只是这个技能的用途是**生产更多技能**。
 
 ## 产出结构
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.0 — 2026-09-15
+
+- 附带生态技能 `skills/research-roadmap/`：论文／报告／基金技术路线图绘制（SVG + PNG，按需可编辑 PPT / draw.io）。布线硬规则由随附 `scripts/check_graph.py` 强制（多段路由斜向段＝ERROR、短间距拐弯＝WARN）。
+- 新增 `docs/technical-roadmap-experience.zh-CN.md`：一次真实基金技术路线图交付的完整返工教训与固化规则对照。
+
 ## 1.0.0 — 2026-09-15
 
 - 首个公开版本。

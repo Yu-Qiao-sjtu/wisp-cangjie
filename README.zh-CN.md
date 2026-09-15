@@ -120,7 +120,18 @@ Wisp 生态由**中国科学院徐洲更博士**开发维护：
 | 科研工作台 | [wisp-science](https://github.com/xuzhougeng/wisp-science) | 本地优先的桌面 AI 科研工作台：Python/R、MCP 生信工具、SSH/WSL/GPU 运行时，skill 商店与打包规范 |
 | 终端工作区 | [wispterm](https://github.com/xuzhougeng/wispterm) | 跨平台终端工作区（libghostty-vt），面向远程开发与 AI agent 工作流 |
 | 技能工厂 | **wisp-cangjie**（本仓库） | 把书 / 视频 / 播客蒸馏成可安装的 wisp skill |
-| 生态技能示例 | research-roadmap、manuscript-polish、nsfc-grant-writing、signaling-pathway-atlas | 同一 house 格式，已安装在本地技能目录 |
+| 生态技能示例 | **research-roadmap（随仓库附带，见 `skills/`）**、manuscript-polish、nsfc-grant-writing、signaling-pathway-atlas | 同一 house 格式，已安装在本地技能目录 |
+
+本仓库 `skills/` 目录附带已实测修订的生态技能，拷入技能目录即可安装：
+
+```bash
+cp -r skills/research-roadmap ~/.wisp/skills/
+```
+
+- **research-roadmap** — 绘制论文／报告／基金技术路线图（SVG + PNG，按需可编辑 PPT / draw.io）。
+  布线硬规则（相邻卡片直连、正交总线、主轴共线）已固化进随附检查器
+  `scripts/check_graph.py`；完整方法论与一次真实基金路线图交付的返工教训见
+  [`docs/technical-roadmap-experience.zh-CN.md`](docs/technical-roadmap-experience.zh-CN.md)。
 
 蒸馏出的每个 skill 都自带 `SKILL.md` + `references/` + `scripts/`，
 放进 `~/.wisp/skills/` 即进入生态 — 蒸馏越多，生态越繁茂。

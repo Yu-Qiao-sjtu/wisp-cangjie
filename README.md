@@ -104,7 +104,17 @@ Wisp Cangjie is the "skill factory" of the [Wisp](https://github.com/xuzhougeng)
 | Research workbench | [wisp-science](https://github.com/xuzhougeng/wisp-science) | Local-first desktop AI research workbench: Python/R, MCP bioinformatics tools, SSH/WSL/GPU runtimes, skill store and packaging spec |
 | Terminal workspace | [wispterm](https://github.com/xuzhougeng/wispterm) | Cross-platform terminal workspace (libghostty-vt) for remote development and AI agent workflows |
 | Skill factory | **wisp-cangjie** (this repo) | Distills books / videos / podcasts into installable Wisp skills |
-| Example skills | research-roadmap, manuscript-polish, nsfc-grant-writing, signaling-pathway-atlas | Same house format, installed locally |
+| Example skills | **research-roadmap (bundled in this repo, see `skills/`)**, manuscript-polish, nsfc-grant-writing, signaling-pathway-atlas | Same house format, installed locally |
+
+The `skills/` directory ships a field-tested ecosystem skill. Install it by copying:
+
+```bash
+cp -r skills/research-roadmap ~/.wisp/skills/
+```
+
+- **research-roadmap** — draws academic technical roadmaps for papers, reports, and grant applications (SVG + PNG, editable PPT / draw.io on demand).
+  Hard routing rules (direct links for adjacent cards, orthogonal buses, shared main axis) are enforced by the bundled checker `scripts/check_graph.py`;
+  see [`docs/technical-roadmap-experience.zh-CN.md`](docs/technical-roadmap-experience.zh-CN.md) for the methodology and the rework lessons behind it.
 
 Every distilled skill ships with `SKILL.md` + `references/` + `scripts/` — drop it into `~/.wisp/skills/` and it joins the ecosystem. The more you distill, the richer it grows.
 

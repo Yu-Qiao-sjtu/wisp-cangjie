@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.4.0 — 2026-10-07
+
+- **语义母本层（阶段 0.5）**：补齐「语义理解 → 逻辑抽取」之间的显式载体，逻辑链在环节间有了可核查的传递物：
+  - 新增语义母本 schema（`assets/schemas/semantic-map.schema.json`）、阶段 0.5 方法论（`references/methodology/01b-stage0.5-semantic-map.md`）与模板（`references/templates/SEMANTIC_MAP.md.template`）；
+  - 阶段 1 六个提取器接母本取材：候选带 `chain_refs` 溯源，逐条锚定母本节点（主张 / 证据 / 推理 / 假设 / 边界）；
+  - 阶段 1.5 三重验证新增**链位置核查**；阶段 2 新增**两级台账**（候选覆盖率 + 链位置覆盖）；阶段 0.5 接线至 SKILL.md 与总览不变量。
+- **语义保真测试（阶段 4b）**：验证「理解有没有传丢」，与“找得到”（触发）维度互补：
+  - 新增 `references/methodology/06b-stage4-semantic-fidelity.md`：三把锁（L1 逻辑链重建盲测 / L2 回述 / L3 锚点机械检查）、判卷四级（通过 / 断裂 / 错位 / 降级）、回卡复核口径、测试分辨率声明、无母本项目的降级协议（源文级「应载论点清单」对照）；
+  - 新增 `scripts/check_semantic_fidelity.py`（链条覆盖率机械检查，含负面测试）与 `scripts/check_rebuild_quotes.py`（盲测出处归一化回查）；
+  - 阶段 4 / 0.5 / 主流程接线至 06b（SKILL.md / 01b / 06）。
+- **docs 坏链清零**：仓库根 `validate_skill_pack.py` 29 errors → 0（语言切换链接 / 产物结构描述 / 设计草案规划路径）。
+- `TOOL_VERSION` 升至 `wisp-cangjie v1.4.0`。
+
 ## 1.3.0 — 2026-10-07
 
 - **编排纪律 v1**：借鉴 Paper2Agent 编排工程的构建期轻规则，落地四个协作约定：

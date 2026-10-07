@@ -29,18 +29,22 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from distill_common import TOOL_VERSION, dump_json, load_yaml  # noqa: E402
 from compile_single import (active_capabilities, build_tree, capability_resources,
-                            promoted_capabilities, resource_links, write_tree)  # noqa: E402
+                            promoted_capabilities, resource_links,
+                            validate_frontmatter_tags, write_tree)  # noqa: E402
 
 
 def build_promoted_skill_md(cap: dict, bundle: dict, card_text: str) -> str:
     fm = cap.get("frontmatter", {})
     description = fm.get("description") or f"{'；'.join(cap['intents'])}。{cap['one_liner']}"
     tags = fm.get("tags", [])
+    if tags:
+        validate_frontmatter_tags(tags)
     lines = [
         "---",
         f"name: {cap['slug']}",
         "description: |",
         *[f"  {line}" for line in description.strip().splitlines()],
+        *([f"tags: [{', '.join(tags)}]"] if tags else []),
         "metadata:",
         f"  distill.generated-by: {TOOL_VERSION}",
         f"  distill.capability-id: {cap['capability_id']}",

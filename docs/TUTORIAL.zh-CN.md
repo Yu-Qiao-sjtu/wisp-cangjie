@@ -2,7 +2,7 @@
 
 > 本教程面向第一次使用 Wisp Cangjie 的用户，带你从零完成一次完整蒸馏。
 > 全程约 30–60 分钟（其中大部分时间在等 agent 跑流水线）。
-> 语言版本：[简体中文](TUTORIAL.zh-CN.md) · [English](TUTORIAL.en.md)
+> 语言版本：简体中文（本页） · [English](https://github.com/Yu-Qiao-sjtu/wisp-cangjie/blob/main/docs/TUTORIAL.en.md)
 
 ## 开始之前
 
@@ -54,7 +54,7 @@ books/<slug>/
 └── dist/<...>/          ← 编译好的 skill 包（这才是要安装的东西）
 ```
 
-编译产物是一个标准 skill 包：入口 `SKILL.md`（触发条件+路由表）+ `references/capabilities/`（能力卡）+ `references/overview.md|glossary.md|cheatsheet.md`。日常使用入口 SKILL.md 即可；想深究某个能力，按路由表去读对应能力卡。
+编译产物是一个标准 skill 包：入口 `SKILL.md`（触发条件+路由表）+ `references/capabilities/`（能力卡）+ overview.md / glossary.md / cheatsheet.md（位于产物的 `references/` 目录下）。日常使用入口 SKILL.md 即可；想深究某个能力，按路由表去读对应能力卡。
 
 注意：**交付物已脱敏**——源文档的书名、作者、章节标题、逐字引文不会出现在安装的 skill 里，完整溯源只保留在本机 `books/<slug>/` 审计轨迹中。
 

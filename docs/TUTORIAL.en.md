@@ -3,7 +3,7 @@
 > This tutorial is for first-time users of Wisp Cangjie and walks you through one
 > complete distillation from scratch. Expect 30–60 minutes, most of it waiting for
 > the agent to run the pipeline.
-> Languages: [简体中文](TUTORIAL.zh-CN.md) · [English](TUTORIAL.en.md)
+> Languages: [简体中文](https://github.com/Yu-Qiao-sjtu/wisp-cangjie/blob/main/docs/TUTORIAL.zh-CN.md) · English (this page)
 
 ## Before you start
 
@@ -55,7 +55,7 @@ books/<slug>/
 └── dist/<...>/          ← the compiled skill package (this is what you install)
 ```
 
-The compiled artifact is a standard skill package: entry `SKILL.md` (triggers + routing table) + `references/capabilities/` (capability cards) + `references/overview.md|glossary.md|cheatsheet.md`. For daily use the entry SKILL.md is enough; to go deeper, follow the routing table to the relevant capability card.
+The compiled artifact is a standard skill package: entry `SKILL.md` (triggers + routing table) + `references/capabilities/` (capability cards) + overview.md / glossary.md / cheatsheet.md (inside the artifact's `references/`). For daily use the entry SKILL.md is enough; to go deeper, follow the routing table to the relevant capability card.
 
 Note: **deliverables are sanitized** — the source document's title, author, chapter titles, and verbatim quotes never appear in the installed skill; full provenance stays in the local `books/<slug>/` audit trail.
 

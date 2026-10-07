@@ -26,17 +26,17 @@ Paper Reader 补上这一段，定位为 **wisp-cangjie 的可选上游入口**�
 ```text
 用户: 基于 wisp-cangjie 抓取"AI 辅助抗体设计"方向的最新文章
 agent: 弹出源选择卡 + 参数卡（见 §3）→ 用户勾选
-agent: python scripts/reader.py fetch --sources arxiv,biorxiv --since 14d --keywords "..."
+agent: python paper-reader/scripts/reader.py fetch --sources arxiv,biorxiv --since 14d --keywords "..."
        （确定性: 轮询 → 去重 → 打分 → 落 inbox + report.md）
 agent: 展示候选清单（标题/来源/得分/摘要）
 用户: 挑选 2 篇
-agent: python scripts/reader.py export <id> --to books/<slug>/
+agent: python paper-reader/scripts/reader.py export <id> --to books/<slug>/
        → 进入论文模式六阶段 → 编译交付 skill
 ```
 
 ### 入口 B — 自备 PDF / 资源（老路保持）
 
-用户已有 PDF 时无需改变现有流程；新增 `reader.py import --pdf <path> --to books/<slug>/`
+用户已有 PDF 时无需改变现有流程；新增 `paper-reader/scripts/reader.py import --pdf <path> --to books/<slug>/`
 仅把手工准备归一化为一条命令，产出与入口 A 完全相同的输入契约。
 
 ### 保留项 C — 下游可执行工件转换（Paper2Agent 式）
@@ -86,7 +86,7 @@ agent: python scripts/reader.py export <id> --to books/<slug>/
 
 | 源 | 订阅方式 | 备注 |
 | --- | --- | --- |
-| arXiv | 分类 RSS + API 查询式订阅 | 查询模板见 `references/query-templates.md` |
+| arXiv | 分类 RSS + API 查询式订阅 | 查询模板见 `paper-reader/references/query-templates.md` |
 | bioRxiv / medRxiv | 学科 RSS + api.biorxiv.org | 按日期 / DOI 取详情 |
 | PubMed | saved search 查询（可转 RSS） | 官方免费 |
 | 期刊 RSS | 原生 RSS（Nature 系等多数有）；缺失时经 RSSHub 生成 | 站点清单可配置 |

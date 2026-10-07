@@ -16,9 +16,19 @@
       - decision=verified 的候选项必须挂回母本 ≥1 节点（无链记 ERROR，对应“挂不上
         母本逻辑链的候选不得标 verified”）。
 
-用法:
+用法（单源，向后兼容）:
   python scripts/check_semantic_fidelity.py <semantic-map.md> \
       [--source <源文文件>] [--candidates <候选项目录或文件>] [--verified <verified.md>]
+
+用法（多源项目，v1.6）:
+  python scripts/check_semantic_fidelity.py <map-1.md> <map-2.md> ... \
+      --source <源-1文件> --source <源-2文件> ... --candidates <候选目录> --verified <verified.md>
+  - 多份母本：位置参数给多份 semantic-map.md（每来源一份）；--source 重复出现，
+    按序与母本一一配对；单个 --source 值可用英文逗号分隔多个源文文件（合并回查，
+    用于“一集多帖”的来源组合）。
+  - 来源级链校验：候选项带 source_id 时，chain_refs 必须指向其来源母本的节点
+    （指向其他来源记 ERROR「跨源挂链」）；无 source_id 时回退全量并集校验。
+  - 层 B 按母本逐份报告，多份时末行给合计。
 退出码: 0 = 无 ERROR；1 = 存在 ERROR；2 = 输入无效。
 """
 
@@ -99,7 +109,7 @@ def normalize(s: str) -> str:
     return "".join(ch for ch in s.lower() if ch.isalnum())
 
 
-def check_structure(map_data: dict) -> list[dict]:
+def check_structure(map_data: dict, label: str = "semantic-map") -> list[dict]:
     """层 A：母本结构校验。返回节点列表（结构错误也继续，尽量多报问题）。"""
     if map_data.get("schema_version") != 1:
         errors.append("[A] schema_version 缺失或不等于 1")
@@ -177,12 +187,12 @@ def check_structure(map_data: dict) -> list[dict]:
         tos = [l.get("to") for l in (node.get("links") or []) if isinstance(l, dict)]
         if not any(isinstance(t, str) and t in ev_ids for t in tos):
             errors.append(f"[A] {node.get('id')}: claim 未关联任何 evidence（应显式标 missing 或补证据节点）")
-    print(f"[A] 母本结构: {len(nodes)} 节点 (" + " / ".join(f"{k} {v}" for k, v in sorted(counts.items())) + ")")
+    print(f"[A] {label} [{sid if isinstance(sid, str) else '?'}]: {len(nodes)} 节点 (" + " / ".join(f"{k} {v}" for k, v in sorted(counts.items())) + ")")
     return nodes
 
 
-def check_anchors(nodes: list[dict], source_text: str) -> None:
-    """层 B：锚点可回查（引文归一化后回查源文；拼接引用分段核验）。"""
+def check_anchors(nodes: list[dict], source_text: str, label: str = "semantic-map") -> tuple[int, int, int, int]:
+    """层 B：锚点可回查（引文归一化后回查源文；拼接引用分段核验）。返回 (整段, 分段, 未命中, 豁免)。"""
     src_norm = normalize(source_text)
     full_hit = seg_hit = miss = exempt = 0
     for node in nodes:
@@ -194,7 +204,7 @@ def check_anchors(nodes: list[dict], source_text: str) -> None:
             continue
         if not (isinstance(quote, str) and quote.strip()):
             miss += 1
-            warnings.append(f"[B] {nid}: 无引文，无法回查（非 missing 节点）")
+            warnings.append(f"[B:{label}] {nid}: 无引文，无法回查（非 missing 节点）")
             continue
         if normalize(quote) and normalize(quote) in src_norm:
             full_hit += 1
@@ -207,18 +217,25 @@ def check_anchors(nodes: list[dict], source_text: str) -> None:
                 continue
             miss += 1
             lost = [s.strip() for s in segments if normalize(s) not in src_norm]
-            warnings.append(f"[B] {nid}: 分段命中 {len(hit)}/{len(segments)}，未命中片段: {' | '.join(lost[:3])}")
+            warnings.append(f"[B:{label}] {nid}: 分段命中 {len(hit)}/{len(segments)}，未命中片段: {' | '.join(lost[:3])}")
         else:
             miss += 1
-            warnings.append(f"[B] {nid}: 引文未能在源文中回查: {quote[:60]}…")
+            warnings.append(f"[B:{label}] {nid}: 引文未能在源文中回查: {quote[:60]}…")
     total = full_hit + seg_hit + miss
-    print(f"[B] 锚点可回查: 整段命中 {full_hit} / 分段命中 {seg_hit} / 未命中 {miss}" + (f" / 豁免 {exempt}（missing 无引文）" if exempt else "") + f"（共 {total} 条应查引文）")
+    print(f"[B] {label}: 整段命中 {full_hit} / 分段命中 {seg_hit} / 未命中 {miss}" + (f" / 豁免 {exempt}（missing 无引文）" if exempt else "") + f"（共 {total} 条应查引文）")
+    return full_hit, seg_hit, miss, exempt
 
 
-def check_chains(candidates: list[dict], verified: list[dict], node_ids: set[str]) -> None:
-    """层 C：候选挂链（带链引用存在性 + verified 必须有链）。"""
+def check_chains(candidates: list[dict], verified: list[dict], nodes_by_source: dict[str, set[str]], all_ids: set[str]) -> None:
+    """层 C：候选挂链（引用存在性 + 来源级校验 + verified 必须有链）。
+
+    候选项带 source_id 且该来源有母本时：chain_refs 必须指向其来源母本的节点
+    （指向其他来源 = 跨源挂链 ERROR）；无 source_id / 来源无母本时回退全量并集校验。
+    """
     has_chain: dict[str, int] = {}
     dangling = 0
+    cross_source = 0
+    no_sid = 0
     for cand in candidates:
         cid = cand.get("id")
         refs = cand.get("chain_refs")
@@ -233,12 +250,31 @@ def check_chains(candidates: list[dict], verified: list[dict], node_ids: set[str
             continue
         if isinstance(cid, str):
             has_chain[cid] = len(refs)
+        sid = cand.get("source_id")
+        if isinstance(sid, str):
+            own_ids = nodes_by_source.get(sid)
+            if own_ids is None:
+                warnings.append(f"[C] 候选 {cid}: source_id {sid!r} 无对应母本，回退并集校验")
+        else:
+            own_ids = None
+            no_sid += 1
+        check_set = own_ids if own_ids is not None else all_ids
         for ref in refs:
-            if ref not in node_ids:
+            if ref in check_set:
+                continue
+            if own_ids is not None and ref in all_ids:
+                cross_source += 1
+                errors.append(f"[C] 候选 {cid}: chain_refs {ref!r} 指向其他来源的母本节点（跨源挂链）")
+            else:
                 dangling += 1
                 errors.append(f"[C] 候选 {cid}: chain_refs 指向不存在的母本节点: {ref!r}")
     with_chain = sum(1 for v in has_chain.values() if v > 0)
-    print(f"[C] 候选挂链: {len(candidates)} 个候选项 / {with_chain} 个带链" + (f" / 悬空引用 {dangling}" if dangling else ""))
+    extra = ""
+    if cross_source:
+        extra += f" / 跨源挂链 {cross_source}"
+    if no_sid and len(nodes_by_source) > 1:
+        extra += f" / 未标 source_id {no_sid}（回退并集校验）"
+    print(f"[C] 候选挂链: {len(candidates)} 个候选项 / {with_chain} 个带链" + (f" / 悬空引用 {dangling}" if dangling else "") + extra)
     if not verified:
         return
     v_total = v_ok = 0
@@ -261,32 +297,54 @@ def check_chains(candidates: list[dict], verified: list[dict], node_ids: set[str
 
 
 def main(argv: list[str]) -> int:
-    ap = argparse.ArgumentParser(description="语义保真机械检查（issue #15）")
-    ap.add_argument("map", help="semantic-map.md 路径")
-    ap.add_argument("--source", help="源文文件（启用层 B 锚点可回查）")
+    ap = argparse.ArgumentParser(description="语义保真机械检查（issue #15；多源支持 v1.6）")
+    ap.add_argument("map", nargs="+", help="semantic-map.md 路径（可多份，每来源一份；与 --source 按序配对）")
+    ap.add_argument("--source", action="append", default=[], help="源文文件（可重复，与母本按序配对；单值可用英文逗号分隔多文件合并回查）")
     ap.add_argument("--candidates", help="候选项目录或文件（启用层 C 挂链检查）")
     ap.add_argument("--verified", help="verified.md（检查 decision=verified 条目是否挂链）")
     args = ap.parse_args(argv[1:])
 
-    map_path = Path(args.map)
-    if not map_path.is_file():
-        print(f"[input] 文件不存在: {map_path}")
-        return 2
-    blocks = load_yaml_blocks(map_path.read_text(encoding="utf-8"))
-    map_data = next((b for b in blocks if isinstance(b, dict) and "nodes" in b), None)
-    if map_data is None:
-        print(f"[input] 未在 {map_path} 中找到含 nodes 的内嵌 YAML 块")
+    map_paths = [Path(p) for p in args.map]
+    if args.source and len(args.source) != len(map_paths):
+        print(f"[input] --source 数量（{len(args.source)}）与母本数量（{len(map_paths)}）不一致：需按序一一配对")
         return 2
 
-    print(f"=== 语义保真检查: {map_path} ===")
-    nodes = check_structure(map_data)
+    maps_data: list[tuple[Path, dict]] = []
+    for mp in map_paths:
+        if not mp.is_file():
+            print(f"[input] 文件不存在: {mp}")
+            return 2
+        blocks = load_yaml_blocks(mp.read_text(encoding="utf-8"))
+        map_data = next((b for b in blocks if isinstance(b, dict) and "nodes" in b), None)
+        if map_data is None:
+            print(f"[input] 未在 {mp} 中找到含 nodes 的内嵌 YAML 块")
+            return 2
+        maps_data.append((mp, map_data))
+
+    if len(map_paths) > 1:
+        print(f"=== 语义保真检查: {len(map_paths)} 份母本 ===")
+    else:
+        print(f"=== 语义保真检查: {map_paths[0]} ===")
+    nodes_list: list[tuple[Path, list[dict]]] = []
+    for mp, map_data in maps_data:
+        nodes_list.append((mp, check_structure(map_data, label=mp.name)))
 
     if args.source:
-        src = Path(args.source)
-        if not src.is_file():
-            print(f"[input] 源文不存在: {src}")
-            return 2
-        check_anchors(nodes, src.read_text(encoding="utf-8"))
+        totals = [0, 0, 0, 0]
+        for (mp, nodes), spec in zip(nodes_list, args.source):
+            files = [Path(s.strip()) for s in spec.split(",") if s.strip()]
+            for f in files:
+                if not f.is_file():
+                    print(f"[input] 源文不存在: {f}")
+                    return 2
+            text = "\n".join(f.read_text(encoding="utf-8") for f in files)
+            label = mp.name if len(files) == 1 else (mp.name + " <- " + "+".join(f.name for f in files))
+            stats = check_anchors(nodes, text, label=label)
+            totals = [a + b for a, b in zip(totals, stats)]
+        if len(nodes_list) > 1:
+            f_, s_, m_, e_ = totals
+            total = f_ + s_ + m_
+            print(f"[B] 合计: 整段命中 {f_} / 分段命中 {s_} / 未命中 {m_}" + (f" / 豁免 {e_}（missing 无引文）" if e_ else "") + f"（共 {total} 条应查引文）")
     else:
         print("[B] 锚点可回查: 跳过（未提供 --source）")
 
@@ -304,8 +362,15 @@ def main(argv: list[str]) -> int:
                 print(f"[input] verified 文件不存在: {vf}")
                 return 2
             verified = [b for b in load_yaml_blocks(vf.read_text(encoding="utf-8")) if isinstance(b, dict)]
-        node_ids = {n["id"] for n in nodes if isinstance(n, dict) and isinstance(n.get("id"), str)}
-        check_chains(candidates, verified, node_ids)
+        nodes_by_source: dict[str, set[str]] = {}
+        all_ids: set[str] = set()
+        for (mp, nodes), (_, map_data) in zip(nodes_list, maps_data):
+            sid = map_data.get("source_id")
+            ids = {n["id"] for n in nodes if isinstance(n, dict) and isinstance(n.get("id"), str)}
+            all_ids |= ids
+            if isinstance(sid, str):
+                nodes_by_source[sid] = ids
+        check_chains(candidates, verified, nodes_by_source, all_ids)
     else:
         print("[C] 候选挂链: 跳过（未提供 --candidates / --verified）")
 

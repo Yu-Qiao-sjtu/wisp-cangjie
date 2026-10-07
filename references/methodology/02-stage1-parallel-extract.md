@@ -14,6 +14,7 @@
 
 每个 sub-agent 接收:
 - `BOOK_OVERVIEW.md` (阶段 0 产出, 提供全局上下文)
+- `semantic-map.md` (阶段 0.5 产出, 逻辑链取证锚点; 候选须挂回母本节点 chain_refs)
 - 书本文本 (或文本路径)
 - 对应的 extractor prompt (`references/extractors/<type>-extractor.md`)
 
@@ -80,6 +81,7 @@ summary: |                        # 用自己的话,5-10 行
   ...
 tags: [decision, mental-model]    # 便于后续链接
 task_ids: [task-01]               # 对应 overview 的任务；无对应时解释原因
+chain_refs: [c01, r01]            # 挂回的语义母本节点；至少 1 个，挂不上时注明缺口
 ```
 
 ## 输出前的自检
@@ -88,6 +90,7 @@ task_ids: [task-01]               # 对应 overview 的任务；无对应时解�
 1. 这个单元**在书中**有明确根据吗? (不是我脑补)
 2. 它属于我这个 extractor 的职责范围吗? (不要越界)
 3. 它是不是已经在别处被别的 extractor 提取过了? (重复不是问题,阶段 1.5 会合并)
+4. 它在母本逻辑链中挂到哪个节点? (chain_refs 至少 1 个;挂不上说明缺什么)
 
 ## 不在本阶段做的事
 

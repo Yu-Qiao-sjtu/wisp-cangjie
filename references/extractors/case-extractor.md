@@ -9,7 +9,10 @@
 ## 你的输入
 
 - `BOOK_OVERVIEW.md`
+- `semantic-map.md` — 语义母本(阶段 0.5 产出;全节点带源锚点)
 - 书本文本
+
+取材时**先读母本**: 按"这个案例演示哪条主张 / 推理"取材,候选挂回母本节点 (见 `references/methodology/01b-stage0.5-semantic-map.md`)。
 
 ## 你的职责范围
 
@@ -39,6 +42,7 @@
 - id: c01
   title: 投资 See's Candy
   type: case
+  chain_refs: [c01, r01]        # ★ 挂回语义母本节点(阶段 0.5)
   example_kind: reported_case    # firsthand / reported_case / worked_example；只描述原书材料
   source_chapter: 第 5 讲
   source_quote: |
@@ -61,6 +65,7 @@
 - [ ] 有原文引用作为证据
 - [ ] `outcome` 字段尽量填 (如果书中说了结果)
 - [ ] 例题注明输入和演算结果；原书没交代的实际结果写“未说明”，不推测
+- [ ] 候选已挂回母本逻辑链 (chain_refs ≥ 1,或注明缺口)
 - [ ] 不做筛选
 
 ## 数量预期

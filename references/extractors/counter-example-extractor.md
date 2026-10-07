@@ -9,7 +9,10 @@
 ## 你的输入
 
 - `BOOK_OVERVIEW.md`
+- `semantic-map.md` — 语义母本(阶段 0.5 产出;全节点带源锚点)
 - 书本文本
+
+取材时**先读母本**: 按"这个反例威胁哪条主张 / 假设"取材,候选挂回母本节点 (见 `references/methodology/01b-stage0.5-semantic-map.md`)。
 
 ## 你的职责范围
 
@@ -40,6 +43,7 @@
 - id: ce01
   title: 过度自信偏误
   type: counter-example
+  chain_refs: [b01, r01]        # ★ 挂回语义母本节点(阶段 0.5)
   source_chapter: 误判心理学 · 第 12 条
   source_quote: |
     "大多数人都认为自己比平均水平更聪明、更公正、更有能力。
@@ -65,6 +69,7 @@
 - [ ] `warning_signs` 尽量填 (让后续的 B 段有信号)
 - [ ] `bound_to`: 说明这个反例会限制哪些正面 skill 的适用范围
 - [ ] 有原文引用
+- [ ] 候选已挂回母本逻辑链 (chain_refs ≥ 1,或注明缺口)
 
 ## 上下文策略（v2.2：检索式取块）
 

@@ -5,7 +5,10 @@
 ## 你的输入
 
 - `BOOK_OVERVIEW.md`
+- `semantic-map.md` — 语义母本(阶段 0.5 产出; 主张→证据→推理→假设→边界, 全节点带源锚点)
 - 书本文本
+
+取材时**先读母本**: 按"这条规则 / 公式 / 口径支撑或限定哪条主张"取材,候选挂回母本节点 (见 `references/methodology/01b-stage0.5-semantic-map.md`)。
 
 ## 你的职责范围
 
@@ -41,6 +44,7 @@
 - id: p01
   title: Stop Doing List
   type: principle
+  chain_refs: [c02, r02]        # ★ 挂回语义母本节点(阶段 0.5);取材时说明支撑/延伸哪条逻辑链
   source_chapter: 第 2 部分 · 投资篇
   source_quote: |
     "不做什么比做什么更重要。我们的 stop doing list 比 to do list 长得多。"
@@ -55,6 +59,7 @@
 - [ ] 每条是有原文支持的规则/清单/公式/模板字段，缺失条件已标注
 - [ ] 有明确原文
 - [ ] 引用 ≤150 字 (英文 ≤100 词)
+- [ ] 候选已挂回母本逻辑链 (chain_refs ≥ 1,或注明缺口)
 - [ ] 不做筛选
 
 ## 常见错误

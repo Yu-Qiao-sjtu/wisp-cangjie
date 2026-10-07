@@ -11,7 +11,10 @@
 ## 你的输入
 
 - `BOOK_OVERVIEW.md`
+- `semantic-map.md` — 语义母本(阶段 0.5 产出;全节点带源锚点)
 - 书本文本
+
+取材时**先读母本**: 该术语在哪条主张 / 推理链中承载特定含义,就挂回哪个母本节点 (见 `references/methodology/01b-stage0.5-semantic-map.md`)。
 
 ## 你的职责范围
 
@@ -28,6 +31,7 @@
 - id: g01
   term: 能力圈
   type: term
+  chain_refs: [c01]             # ★ 挂回语义母本节点(阶段 0.5)
   source_chapter: 第 2 讲
   author_definition: |
     "你真正能做出准确判断的知识边界。不是你知道什么, 而是你知道'你知道什么'和'你不知道什么'的边界。"
@@ -47,6 +51,7 @@
 - [ ] `author_definition` 尽量使用书中原文片段
 - [ ] `key_distinction`: 说明和"常识用法"的差异 (这是最有价值的字段)
 - [ ] `why_it_matters`: 为什么下游 skill 需要这个澄清
+- [ ] 候选已挂回母本逻辑链 (chain_refs ≥ 1,或注明缺口)
 
 ## 数量预期
 

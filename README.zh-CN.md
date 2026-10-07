@@ -21,6 +21,40 @@
   Wisp Cangjie 是在其基础上面向 Wisp Science 生态的深度改编 —— 感谢原作者
   [kangarooking](https://github.com/kangarooking) 的开源工作，欢迎关注其微信公众号：
   **袋鼠帝AI客栈**。
+- **论文获取与追踪**（Paper Reader 与论文模式的参考生态）：
+  - [jmiao24/Paper2Agent](https://github.com/jmiao24/Paper2Agent) —— "论文转可交互
+    agent / MCP" 的范式与双组件思路（Miao et al., Nature 2026），Paper Reader
+    下游转换保留项的直接参照；
+  - [openags/paper-search-mcp](https://github.com/openags/paper-search-mcp) ——
+    arXiv / PubMed / bioRxiv / Crossref 多源检索与下载的 MCP 封装；
+  - [blazickjp/arxiv-mcp-server](https://github.com/blazickjp/arxiv-mcp-server) ——
+    arXiv 检索、下载与分析 MCP；
+  - [TideDra/zotero-arxiv-daily](https://github.com/TideDra/zotero-arxiv-daily) ——
+    基于个人文献库的兴趣推荐与 TLDR 日报模式；
+  - [dw-dengwei/daily-arXiv-ai-enhanced](https://github.com/dw-dengwei/daily-arXiv-ai-enhanced)
+    —— GitHub Actions 零运维"抓取-总结-发布"流水线；
+  - [colorfulandcjy0806/Arxiv-tracker](https://github.com/colorfulandcjy0806/Arxiv-tracker)
+    —— 跨天去重与防重复投递工程模式；
+  - [AutoLLM/ArxivDigest](https://github.com/AutoLLM/ArxivDigest)、
+    [karpathy/arxiv-sanity-lite](https://github.com/karpathy/arxiv-sanity-lite) ——
+    个性化论文推荐与摘要系统的经典实现；
+  - [DIYgod/RSSHub](https://github.com/DIYgod/RSSHub) —— 期刊官网缺失 RSS 时的
+    通用生成通道；
+  - 开放学术基础设施：[arXiv](https://arxiv.org)、bioRxiv / medRxiv、
+    PubMed / Europe PMC、Crossref、OpenAlex、Unpaywall、Semantic Scholar API、
+    Hugging Face Daily Papers —— 数据源与订阅通道。
+- **调度与推送**（Paper Reader 选型时的调研参考）：
+  [huginn/huginn](https://github.com/huginn/huginn)、
+  [n8n-io/n8n](https://github.com/n8n-io/n8n)、
+  [easychen/rsspush](https://github.com/easychen/rsspush) —— "监控 → 过滤 → 推送"
+  与定时引擎模式，帮助我们确认了"按需 CLI、不做常驻定时"的设计取舍。
+- **PDF 解析**（论文模式可选后端，规划中）：
+  [pymupdf/PyMuPDF](https://github.com/pymupdf/PyMuPDF)、
+  [kermitt2/grobid](https://github.com/kermitt2/grobid)、
+  [opendatalab/MinerU](https://github.com/opendatalab/MinerU)、
+  [docling-project/docling](https://github.com/docling-project/docling)、
+  [VikParuchuri/marker](https://github.com/VikParuchuri/marker)、
+  [facebookresearch/nougat](https://github.com/facebookresearch/nougat)。
 
 ## 这是什么
 
@@ -76,6 +110,7 @@ cp -r wisp-cangjie ~/.wisp/skills/
 配套参考：
 
 - `docs/TUTORIAL.zh-CN.md` — **从这里开始**：第一次蒸馏的上手教程（从零到安装）；
+- `docs/paper-reader-design.zh-CN.md` — Paper Reader 上游入口设计草案（方向 → 抓取 → 炼化的"来源获取"设计，待评审）；
 - `references/extractors/` — 6 个提取器 prompt（框架 / 原则 / 案例 / 反例 / 术语 + 论文模式可复现性提取器）；
 - `references/templates/` — 各阶段产出模板；
 - `scripts/distill.py` — 确定性 CLI（`doctor` / `compile` / `replan-output` / `update` / `repair` / `rollback` / `eval`），用法 `python scripts/distill.py --help`；

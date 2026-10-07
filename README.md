@@ -14,6 +14,18 @@
 
 - Wisp Cangjie is built for the Wisp ecosystem created by **Dr. Zhougeng Xu** ([xuzhougeng](https://github.com/xuzhougeng), Chinese Academy of Sciences) — [wisp-science](https://github.com/xuzhougeng/wisp-science) and [wispterm](https://github.com/xuzhougeng/wispterm). The format specification, store validation, and runtime host of everything distilled here come from the Wisp ecosystem.
 - The distillation methodology in this project (the RIA-TV++ pipeline, the capability-card system, and the deterministic compile toolchain) originates from [kangarooking/cangjie-skill](https://github.com/kangarooking/cangjie-skill). Wisp Cangjie is a deep adaptation of that work for the Wisp Science ecosystem — many thanks to the original author [kangarooking](https://github.com/kangarooking); his WeChat official account is **袋鼠帝AI客栈**.
+- **Paper discovery & tracking** (reference ecosystem for Paper Reader and paper mode):
+  - [jmiao24/Paper2Agent](https://github.com/jmiao24/Paper2Agent) — the "paper → interactive agent / MCP" paradigm and dual-component idea (Miao et al., Nature 2026); direct reference for Paper Reader's reserved downstream-conversion option;
+  - [openags/paper-search-mcp](https://github.com/openags/paper-search-mcp) — MCP wrapper for multi-source search and download (arXiv / PubMed / bioRxiv / Crossref);
+  - [blazickjp/arxiv-mcp-server](https://github.com/blazickjp/arxiv-mcp-server) — arXiv search, download, and analysis MCP;
+  - [TideDra/zotero-arxiv-daily](https://github.com/TideDra/zotero-arxiv-daily) — interest-driven recommendations and TLDR digests from a personal library;
+  - [dw-dengwei/daily-arXiv-ai-enhanced](https://github.com/dw-dengwei/daily-arXiv-ai-enhanced) — zero-ops fetch–summarize–publish pipeline on GitHub Actions;
+  - [colorfulandcjy0806/Arxiv-tracker](https://github.com/colorfulandcjy0806/Arxiv-tracker) — cross-day dedup and anti-duplicate delivery patterns;
+  - [AutoLLM/ArxivDigest](https://github.com/AutoLLM/ArxivDigest) and [karpathy/arxiv-sanity-lite](https://github.com/karpathy/arxiv-sanity-lite) — classic personalized recommendation and digest systems for arXiv;
+  - [DIYgod/RSSHub](https://github.com/DIYgod/RSSHub) — generic RSS generation when a journal site has none;
+  - Open scholarly infrastructure: [arXiv](https://arxiv.org), bioRxiv / medRxiv, PubMed / Europe PMC, Crossref, OpenAlex, Unpaywall, Semantic Scholar API, Hugging Face Daily Papers — data sources and subscription channels.
+- **Scheduling & push** (studied while shaping Paper Reader): [huginn/huginn](https://github.com/huginn/huginn), [n8n-io/n8n](https://github.com/n8n-io/n8n), [easychen/rsspush](https://github.com/easychen/rsspush) — "monitor → filter → push" and cron engines that informed the "on-demand CLI, no resident scheduler" decision.
+- **PDF parsing** (optional paper-mode backends, planned): [pymupdf/PyMuPDF](https://github.com/pymupdf/PyMuPDF), [kermitt2/grobid](https://github.com/kermitt2/grobid), [opendatalab/MinerU](https://github.com/opendatalab/MinerU), [docling-project/docling](https://github.com/docling-project/docling), [VikParuchuri/marker](https://github.com/VikParuchuri/marker), [facebookresearch/nougat](https://github.com/facebookresearch/nougat).
 
 ## What is this
 
@@ -62,6 +74,7 @@ The manual is layered — go deeper only as needed:
 Also see:
 
 - `docs/TUTORIAL.en.md` — **start here**: a first-distillation walkthrough from zero to installed;
+- `docs/paper-reader-design.zh-CN.md` — design draft for Paper Reader, the upstream source-acquisition entry (direction → fetch → distillation, pending review);
 - `references/extractors/` — 6 extractor prompts (framework / principle / case / counter-example / glossary + paper-mode reproducibility);
 - `references/templates/` — output templates for each stage;
 - `scripts/distill.py` — deterministic CLI (`doctor` / `compile` / `replan-output` / `update` / `repair` / `rollback` / `eval`); run `python scripts/distill.py --help`;

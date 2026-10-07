@@ -17,7 +17,7 @@ from pathlib import Path
 
 import yaml
 
-TOOL_VERSION = "wisp-cangjie v1.5.0"
+TOOL_VERSION = "wisp-cangjie v1.6.0"
 
 
 # ---------- 基础 IO ----------

@@ -9,6 +9,10 @@
 - `repair` 流加入修复预算（同一 failure case 最多 6 次尝试，超限 fail-closed 写入 `unresolved.md` 请用户裁决）与尝试历史分目录留痕（`attempt-<N>/`）。
 - `update` 流按 content_hash 复用未变更块的既有审查决策（不重跑阶段 1/1.5/1.6），只有新增/修改块进入增量提取。
 - 阶段 5 交付前合规复核分模式（书籍=脱敏清单 / 论文=学术引用规范）；安装冒烟改为从安装位置本身执行，冒烟 prompt 与结果进收尾汇报。
+- 内嵌能力卡资源链接统一为包根相对，消除 broken-ref 硬门误拦。
+- `compile` 产物输出顶层 `tags`（合法性校验 + schema 声明），恢复宿主 search 标签通道。
+- 支持生成 `wisp:` frontmatter 元数据，编译期受控词表硬校验。
+- 补充面向宿主检索的 description / tags 写法（TUTORIAL + 交付 SOP）。
 - `TOOL_VERSION` 升至 `wisp-cangjie v1.2.0`。
 
 ## 1.1.0 — 2026-09-15

@@ -46,7 +46,7 @@ license: Apache-2.0
 阶段 1.6: 独立 Skill 晋级门     → promoted / router 去向
 阶段 2:   RIA++ 构造能力卡      → .distill/capabilities/
 阶段 3:   Zettelkasten 链接     → also_read + GLOSSARY
-阶段 4:   压力测试              → 评测用例 + 回炉淘汰
+阶段 4:   压力测试+保真测试    → 评测用例 + 回炉淘汰
 阶段 5:   编译与交付            → single/pack 产物 + DIGEST.md + 安装
 ```
 
@@ -57,7 +57,7 @@ license: Apache-2.0
 3. **晋级门**: 按 `references/methodology/03b-stage1.6-promotion-gate.md`,对每个通过单元评审五条独立性判据,写入 promoted / router 去向;未晋级单元保留为能力卡,不淘汰。
 4. **能力卡**: 按 `references/methodology/04-stage2-ria-plus.md`,构造 R / I / A1 / A2 / E / B 六段能力卡,把元数据登记进 Capability Bundle (`books/<slug>/.distill/capabilities/verified.yaml`)。
 5. **链接**: 按 `references/methodology/05-stage3-zettelkasten.md`,建立能力间 also_read 引用与区分,整理 `books/<slug>/GLOSSARY.md`。
-6. **压力测试**: 按 `references/methodology/06-stage4-pressure-test.md`,晋级能力测触发精度,路由能力测可达;两类都必须实际完成代表任务并核对输出,不能拿"会调用"替代"做得对"。机械判分可用 `scripts/run_trigger_evals.py` 与 `scripts/run_output_evals.py`。未通过的回炉重做能力卡(同一能力回炉上限 2 轮,仍不通过降级 router/参考并记录);论文模式按 verifiability 分级选择断言强度并做捷径检测与复现/泛化双极查询(见 08)。
+6. **压力测试**: 按 `references/methodology/06-stage4-pressure-test.md`,晋级能力测触发精度,路由能力测可达;两类都必须实际完成代表任务并核对输出,不能拿"会调用"替代"做得对"。机械判分可用 `scripts/run_trigger_evals.py` 与 `scripts/run_output_evals.py`。未通过的回炉重做能力卡(同一能力回炉上限 2 轮,仍不通过降级 router/参考并记录);论文模式按 verifiability 分级选择断言强度并做捷径检测与复现/泛化双极查询(见 08)。有语义母本的项目另按阶段 4b (`references/methodology/06b-stage4-semantic-fidelity.md`) 做逻辑链重建与回述的保真测试,机械检查用 `scripts/check_semantic_fidelity.py`。
 7. **编译交付**: 按 `references/methodology/07-stage5-deliver.md`: 先生成面向读者的 `books/<slug>/DIGEST.md` (模板 `references/templates/DIGEST.md.template`);再运行 `python scripts/distill.py compile --bundle books/<slug>/.distill/capabilities --out dist/<slug> --output auto`,把决策报告交用户轻确认 (按推荐 / 改 single / 改 pack),确认后加 `--yes` 执行;最后问用户安装位置,把产物安装到宿主 skills 目录 (如 `~/.wisp/skills/`)。论文模式以学术引用规范替代脱敏核查(见 08),安装与验收流程不变。
 
 **Hard gates** (违反则阻止输出):

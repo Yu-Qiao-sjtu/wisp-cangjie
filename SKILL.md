@@ -40,6 +40,7 @@ license: Apache-2.0
 
 ```text
 阶段 0:   整书理解 (Adler 四步)  → BOOK_OVERVIEW.md
+阶段 0.5: 语义母本 (逻辑抽取)    → semantic-map.md (主张→证据→推理→边界)
 阶段 1:   5 个提取器并行提取     → 候选方法论单元池
 阶段 1.5: 三重验证筛选          → 通过的单元 (用户轻确认)
 阶段 1.6: 独立 Skill 晋级门     → promoted / router 去向
@@ -50,6 +51,7 @@ license: Apache-2.0
 ```
 
 0. **整书理解**: 按 `references/methodology/01-stage0-adler.md` 执行 Adler 四步 (结构/解释/批判/应用),按 `references/templates/BOOK_OVERVIEW.md.template` 写入 `books/<slug>/BOOK_OVERVIEW.md`,把骨架展示给用户确认后再继续。论文模式按 08 的"论文结构理解"执行,并把**可复现资源清单**写入 overview 独立小节。
+0.5. **语义母本**: 按 `references/methodology/01b-stage0.5-semantic-map.md` 构造 `books/<slug>/semantic-map.md`(主张→证据→推理→假设→边界,全节点带源锚点),与阶段 0 骨架核对后并入骨架确认向用户展示。母本一次生成、全程复用,不受精炼约束;论文模式节点带图表与版本锚点。
 1. **并行提取**: 按 `references/methodology/02-stage1-parallel-extract.md`,用 5 个提取器 prompt — 框架 `references/extractors/framework-extractor.md`、原则 `references/extractors/principle-extractor.md`、案例 `references/extractors/case-extractor.md`、反例 `references/extractors/counter-example-extractor.md`、术语 `references/extractors/glossary-extractor.md` — 独立提取到 `books/<slug>/candidates/`。论文模式额外并行第 6 个提取器"可复现性提取器" `references/extractors/reproducibility-extractor.md`。对照阶段 0 的关键任务清单做覆盖率硬门检查,有未解释遗漏就补读,不虚报零遗漏。
 2. **三重验证**: 按 `references/methodology/03-stage1.5-triple-verify.md`,对每个候选做 V1 来源充分性 / V2 可执行性 / V3 任务增益,分流 verified / reference / needs_review / rejected 并记录依据,更新覆盖审计,再请用户轻确认入选名单。
 3. **晋级门**: 按 `references/methodology/03b-stage1.6-promotion-gate.md`,对每个通过单元评审五条独立性判据,写入 promoted / router 去向;未晋级单元保留为能力卡,不淘汰。

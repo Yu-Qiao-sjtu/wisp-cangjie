@@ -69,6 +69,17 @@ cp -r books/<slug>/dist/<entry-name> ~/.wisp/skills/
 
 Restart/refresh the Wisp runtime, then try one "should trigger" question to confirm it fires. Never install **both** the single and pack variants of the same content — pick one.
 
+## Make it searchable: writing description and tags
+
+The Wisp host finds skills through `search_skills`, which is **literal substring matching** (no tokenization): a query scores only where it appears as a contiguous substring of description or tags. Two rules before delivery:
+
+1. **Keep every trigger phrase on one line — never let it wrap.** The host normalizes the description on load (newlines → spaces, runs of spaces → one space); a wrapped phrase gains a space it never had and stops matching (neither the unspaced nor the spaced query finds it).
+2. **Pick one spacing convention for compound terms** (recommended: no space for Chinese compounds), or spell both variants — under literal matching "样品制备" and "样品 制备" are different strings.
+
+**Mirror key trigger words into `tags`**: for phrases that appear only in tags (e.g. "结果诊断"), the tag channel is the only hit path. `skills/research-roadmap` in this repo is the reference style: single-line description with Chinese trigger phrases inline.
+
+> Automated linting of wrapped CJK prose has a high false-positive rate — keep this as a manual pre-delivery checklist instead of a blocking check.
+
 ## Maintenance
 
 - **Prevent regression after edits**: the compiled package's `test-prompts.json` is a regression suite. After editing, re-run `python scripts/distill.py eval trigger ...` (trigger evals) or `eval output ...` (output evals).

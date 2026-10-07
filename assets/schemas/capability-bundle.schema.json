@@ -107,6 +107,10 @@
             "type": "string"
           },
           "description": "编译为入口 SKILL.md 顶层 tags（wisp 宿主 search_skills 标签通道）"
+        },
+        "wisp": {
+          "type": "object",
+          "description": "wisp-science 宿主元数据，编译为顶层 wisp: 块；受宿主受控词表约束"
         }
       }
     },
@@ -132,6 +136,10 @@
             "type": "string"
           },
           "description": "编译为入口 SKILL.md 顶层 tags（wisp 宿主 search_skills 标签通道）"
+        },
+        "wisp": {
+          "type": "object",
+          "description": "wisp-science 宿主元数据，编译为顶层 wisp: 块；受宿主受控词表约束"
         }
       }
     },

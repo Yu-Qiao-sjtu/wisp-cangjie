@@ -29,8 +29,22 @@ from distill_common import TOOL_VERSION, load_yaml  # noqa: E402
 
 MD_LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)#\s]+?)(?:#[^)\s]*)?\)")
 
-# ---- wisp-science 宿主元数据（frontmatter 顶层 tags）----
-# tags 进 search_skills 的标签通道（整体 +50 / 逐词 +10）；写坏 YAML flow 列表的字符直接拒绝。
+# ---- wisp-science 宿主元数据（frontmatter 顶层 tags / wisp: 块）----
+# 词表与 wisp-skills crate manifest.rs 逐字对齐：tags 进 search_skills 的标签通道；
+# wisp: 块受控词表 + deny_unknown_fields，非法值会让宿主记 parse-error 而不进有效目录，
+# 因此这里在编译期硬校验（归一化规则与宿主一致：trim + 小写 + 排序 + 去重）。
+
+WISP_VOCAB = {
+    "domains": {"general", "bioinformatics", "oncology", "single-cell", "genomics",
+                "transcriptomics", "proteomics", "scientific-literature"},
+    "research_stages": {"observation", "retrieval", "analysis", "hypothesis", "validation", "synthesis"},
+    "roles": {"retrieval", "analyst", "planner", "critic", "validator", "synthesizer"},
+    "evidence_types": {"literature", "project-data", "omics", "single-cell", "computational", "experimental"},
+    "outputs": {"evidence-matrix", "hypothesis-card", "research-design", "analysis-module",
+                "literature-review", "risk-map", "validation-plan", "research-timeline"},
+}
+WISP_SIDE_EFFECTS = {"read_only", "network", "project_write", "code_execution", "external_service"}
+
 
 def validate_frontmatter_tags(tags: list) -> None:
     """顶层 tags 会原样进入 SKILL.md；禁止会破坏 YAML flow 列表的字符。"""
@@ -39,6 +53,35 @@ def validate_frontmatter_tags(tags: list) -> None:
             raise SystemExit(f"[frontmatter] tags 必须是非空字符串: {tag!r}")
         if any(ch in tag for ch in ",[]"):
             raise SystemExit(f"[frontmatter] tag 不能含 , [ ] （flow 列表语法）: {tag!r}")
+
+
+def wisp_frontmatter_lines(meta: dict | None, indent: str = "") -> list[str]:
+    """渲染 frontmatter 顶层 wisp: 块（空则返回 []，保持向后兼容）。"""
+    if not meta:
+        return []
+    unknown = set(meta) - {"schema_version", "side_effects", *WISP_VOCAB}
+    if unknown:
+        raise SystemExit(f"[wisp] 未知字段（宿主 deny_unknown_fields，会 parse-error）: {sorted(unknown)}")
+    if int(meta.get("schema_version", 0)) != 1:
+        raise SystemExit("[wisp] schema_version 必须为 1")
+    lines = [f"{indent}wisp:", f"{indent}  schema_version: 1"]
+    for key, vocab in WISP_VOCAB.items():
+        values = meta.get(key) or []
+        if not isinstance(values, list):
+            raise SystemExit(f"[wisp] {key} 必须是列表")
+        norm = sorted({str(v).strip().lower() for v in values if str(v).strip()})
+        bad = [v for v in norm if v not in vocab]
+        if bad:
+            raise SystemExit(f"[wisp] {key} 非法值 {bad}；受控词表: {sorted(vocab)}")
+        if norm:
+            lines.append(f"{indent}  {key}: [{', '.join(norm)}]")
+    side = meta.get("side_effects")
+    if side:
+        side_norm = str(side).strip().lower()
+        if side_norm not in WISP_SIDE_EFFECTS:
+            raise SystemExit(f"[wisp] side_effects 非法值 {side!r}；受控词表: {sorted(WISP_SIDE_EFFECTS)}")
+        lines.append(f"{indent}  side_effects: {side_norm}")
+    return lines
 
 
 def sanitize_links(text: str, available: set[str]) -> str:
@@ -126,6 +169,7 @@ def build_entry_md(bundle: dict, variant: str) -> str:
         "description: |",
         *[f"  {line}" for line in entry["description"].strip().splitlines()],
         *([f"tags: [{', '.join(entry_tags)}]"] if entry_tags else []),
+        *wisp_frontmatter_lines(entry.get("wisp") or {}),
         "metadata:",
         f"  distill.generated-by: {TOOL_VERSION}",
         f"  distill.variant: {variant}",

@@ -29,8 +29,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from distill_common import TOOL_VERSION, dump_json, load_yaml  # noqa: E402
 from compile_single import (active_capabilities, build_tree, capability_resources,
-                            promoted_capabilities, resource_links,
-                            validate_frontmatter_tags, write_tree)  # noqa: E402
+                            promoted_capabilities, resource_links, validate_frontmatter_tags,
+                            wisp_frontmatter_lines, write_tree)  # noqa: E402
 
 
 def build_promoted_skill_md(cap: dict, bundle: dict, card_text: str) -> str:
@@ -45,6 +45,7 @@ def build_promoted_skill_md(cap: dict, bundle: dict, card_text: str) -> str:
         "description: |",
         *[f"  {line}" for line in description.strip().splitlines()],
         *([f"tags: [{', '.join(tags)}]"] if tags else []),
+        *wisp_frontmatter_lines(fm.get("wisp") or {}),
         "metadata:",
         f"  distill.generated-by: {TOOL_VERSION}",
         f"  distill.capability-id: {cap['capability_id']}",

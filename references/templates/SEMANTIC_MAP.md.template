@@ -1,0 +1,64 @@
+# {{BOOK_TITLE}} — 语义母本 (阶段 0.5 产出)
+
+> 记录全文逻辑骨架 (主张 → 证据 → 推理 → 假设 → 边界), 每节点带源锚点。
+> 结构定义: `assets/schemas/semantic-map.schema.json`; SOP: `references/methodology/01b-stage0.5-semantic-map.md`。
+
+## 基本信息
+
+- **标题**: {{BOOK_TITLE}}
+- **源文件**: {{SOURCE_FILE}}
+- **模式**: {{book / paper}}
+- **处理时间**: {{DATE}}
+
+---
+
+## 一句话主旨
+
+{{ 与 BOOK_OVERVIEW 核对一致 }}
+
+## 主张清单 (骨架)
+
+1. [c01] {{主张 1}}
+2. [c02] {{主张 2}}
+
+**主张间关系**: {{ 并列 / 递进 / 对比 / 反驳 }}
+
+---
+
+## 节点 (yaml)
+
+```yaml
+schema_version: 1
+source_id: {{src-main}}
+mode: {{book}}
+nodes:
+  - id: c01
+    type: claim
+    statement: {{一句话陈述}}
+    status: {{explicit / inferred / missing}}
+    source_anchor:
+      location: {{章节 / 页码 / 时间戳 / 图表编号}}
+      quote: "{{≤150 字原文引用}}"
+    links:
+      - { to: {{e01}}, relation: {{supports}} }
+    task_ids: [{{task-01}}]
+  # ... e / r / a / b 其余节点继续 ...
+```
+
+---
+
+## 缺口清单
+
+- {{missing 节点及补读路径; 无则写"无"}}
+
+---
+
+## ✅ 质量门检查
+
+- [ ] 每条 claim 关联 ≥1 evidence 或显式 missing
+- [ ] 每节点有 source_anchor (explicit 节点 quote ≤150 字)
+- [ ] 关键任务清单可映射到节点
+- [ ] assumption / boundary 取自阶段 0 批判步, 无证据不编造
+- [ ] 与 BOOK_OVERVIEW 骨架核对无矛盾, 已向用户展示确认
+
+**用户确认时间**: {{ }}

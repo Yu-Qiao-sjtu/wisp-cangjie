@@ -66,12 +66,12 @@ nodes:
 - [ ] assumption 与 boundary 已从阶段 0 批判步过一遍，无证据时标待核查、不编造；
 - [ ] 已与 BOOK_OVERVIEW 骨架核对（主张清单不矛盾），并向用户展示确认（可并入阶段 0 的既有确认动作，一次展示两份）。
 
-## 与下游的接口（v2.4 已接线：阶段 1 取材 / 阶段 1.5 台账 / 阶段 2 编译）
+## 与下游的接口（v2.5 已接线：阶段 1 取材 / 阶段 1.5 台账 / 阶段 2 编译 / 阶段 4b 保真验证）
 
 - **阶段 1**: 每个 extractor 的输入 = BOOK_OVERVIEW + semantic-map + 源文（块）；候选新增 `chain_refs`（挂回母本节点），不挂链的候选不得标 verified；
 - **阶段 1.5**: V1 增加链位置核查；coverage-audit 升级为两级台账（任务 → 母本节点 → 候选 → 去向）；
 - **阶段 2**: I 段从母本节点簇编译；E / B 从 reasoning / boundary 推导；
-- **阶段 4**: 逻辑链重建测试以母本为对照基准（见 issue #15）。
+- **阶段 4**: 逻辑链重建测试以母本为对照基准（v2.5 已接线：协议与判卷标准见 `06b-stage4-semantic-fidelity.md`，机械检查见 `scripts/check_semantic_fidelity.py`）；
 
 ## 常见失败模式
 

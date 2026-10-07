@@ -18,6 +18,8 @@
 
 A2 决定能力能否被找到，E/B 决定找到后是否做得对。压力测试应分别记录触发、可达、实际执行和边界处理，不能只用一项好成绩概括整体质量。
 
+理解保真（逻辑链是否被传递）是第四个独立维度：触发说“找得到”，保真说“没传丢”。协议与判卷标准见阶段 4b（`06b-stage4-semantic-fidelity.md`），机械部分用 `scripts/check_semantic_fidelity.py`。
+
 ## 评测原则: 独立 sub-agent 盲测优先
 
 压力测试要尽量模拟真实调用: 一个没有参与蒸馏过程、看不到预期答案的 agent,面对用户 prompt 时是否会自然激活这个 skill。
@@ -146,6 +148,7 @@ python scripts/run_output_evals.py score suite.json --outputs /tmp/distill-eval-
 - 每个 active 能力：触发/路由评测与实际输出评测完成（含边界/缺输入用例），或缺口已记录在案；
 - 未通过能力：完成回炉（≤2 轮）或已按规则降级 router/参考并记录，尝试历史保留于 `attempt-N/`；
 - `test-results.md` 含“独立性登记”小节（run_ref 集合与核对结果）；
+- 有语义母本的项目：保真测试（`06b-stage4-semantic-fidelity.md`）完成或缺口已记录；
 - `PIPELINE_STATE.md` 已更新（回炉轮次、参与者登记、独立性登记）。
 
 **屏障语义**: 全部能力完成评测或降级决定后才进入交付——不得边测边交付。

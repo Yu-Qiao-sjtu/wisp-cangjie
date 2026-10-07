@@ -24,12 +24,22 @@ A2 决定能力能否被找到，E/B 决定找到后是否做得对。压力测�
 
 优先做法:
 - 对每条测试 prompt 启动一个干净的 sub-agent,或在资源有限时对同一个 skill 的一组 prompt 启动一个干净 sub-agent
-- 只给 sub-agent: skill 路径或 skill 内容、用户 prompt、可选的相邻 skill 列表
+- 只给 sub-agent: skill 路径或 skill 内容、用户 prompt、可选的相邻 skill 列表、主流程分配的 `run_ref` (见下“独立性登记”)
 - 不给 sub-agent: `type`、`expected_behavior`、`notes`、通过标准、主流程的判断
-- 要求 sub-agent 输出: `would_trigger`、`reason`、`if_triggered_action`
+- 要求 sub-agent 输出: 首行 `run_ref` 回显、`would_trigger`、`reason`、`if_triggered_action`
 - 主流程再把 sub-agent 输出和 `test-prompts.json` 的预期逐条对比,统计通过率
 
 如果当前环境没有 sub-agent 能力,才退回到主流程自测,并在 `test-results.md` 里标明这是 fallback 结果,可信度低于独立 sub-agent 盲测。
+
+### 独立性登记（机械核对）
+
+盲测的独立性必须可核对,不能只靠声明。执行规则:
+
+1. **分配 run_ref**: 主流程在 spawn 每个 sub-agent (阶段 1 提取器、阶段 4 盲测者等) 时分配唯一标识,格式 `s<阶段>-<角色>-<YYYYMMDDTHHMM>-<4位小写十六进制>` (例: `s1-framework-20261007T1430-k3f9`),随任务包下发;
+2. **回显**: sub-agent 的产出/回答首行回显 `run_ref: <值>`;盲测回答同样回显 — run_ref 不泄露任何预期信息;
+3. **登记**: 主流程把每个 run_ref 按角色登记到 `PIPELINE_STATE.md` 的“参与者登记”区 (模板见 `references/templates/PIPELINE_STATE.md.template`);
+4. **核对**: 全部盲测完成后核对 **盲测 run_refs ∩ 该能力全部蒸馏/提取 run_refs = ∅** (含重试产生的 run_ref);非空即该次盲测无效,换干净 sub-agent 重跑并重新登记,不得事后抹改记录;
+5. **落盘**: `test-results.md` 写 `## 独立性登记` 小节,固定字段: `blind_run_refs`、`distiller_run_refs`、`independence_check: pass/fail`、`fallback: true/false` (fallback 时附 `fallback_reason` 并声明“独立性未达,置信度受限”)。
 
 ## test-prompts.json 格式 (回归评测用例)
 
@@ -128,6 +138,17 @@ python scripts/run_output_evals.py score suite.json --outputs /tmp/distill-eval-
 - 如果失败的 case 暴露了 skill **trigger 描述有歧义**: 修 skill
 - 如果失败的 case 是一个你**之前没想到的合理场景**: 可能需要修 skill 以覆盖或明确排除
 - 如果失败的 case 是你**为了凑诱饵而设计过狠的场景**: 修测试 (但必须记录理由)
+
+## 阶段完成条件（进入阶段 5 的屏障）
+
+以下条件全部完成前，不得进入阶段 5（编译交付）：
+
+- 每个 active 能力：触发/路由评测与实际输出评测完成（含边界/缺输入用例），或缺口已记录在案；
+- 未通过能力：完成回炉（≤2 轮）或已按规则降级 router/参考并记录，尝试历史保留于 `attempt-N/`；
+- `test-results.md` 含“独立性登记”小节（run_ref 集合与核对结果）；
+- `PIPELINE_STATE.md` 已更新（回炉轮次、参与者登记、独立性登记）。
+
+**屏障语义**: 全部能力完成评测或降级决定后才进入交付——不得边测边交付。
 
 ## 输出
 

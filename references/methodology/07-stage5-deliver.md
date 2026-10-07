@@ -11,7 +11,13 @@
 
 ## 第 0 步 — 从 Bundle 编译产物（v2.1）
 
-编译前核对阶段 4 的实际输出记录和 `coverage-audit.md`：格式校验不能替代任务完成验证。存在重要缺口或输出评测未完成时，只能生成明确标注的草稿，不能安装为已验收版本。
+**编译前先过阶段屏障清单**（任一项未满足时不得进入本阶段）：
+
+1. **阶段 1.5 出口**：候选均有四类去向（verified / reference / needs_review / rejected），`coverage-audit.md` 已更新，入选名单已获用户轻确认；
+2. **阶段 4 出口**：每个能力有评测通过或降级决定，`test-results.md` 的独立性登记已填写（核对规则见 `06-stage4-pressure-test.md`），回炉次数未超预算；
+3. **状态同步**：`PIPELINE_STATE.md` 阶段台账已更新到当前进度。
+
+再核对阶段 4 的实际输出记录和 `coverage-audit.md`：格式校验不能替代任务完成验证。存在重要缺口或输出评测未完成时，只能生成明确标注的草稿，不能安装为已验收版本。
 
 ```bash
 python scripts/distill.py compile \
@@ -99,4 +105,4 @@ python scripts/distill.py compile \
 > 如需持续进化,把 `books/<slug>/` 下的 test-prompts.json 与 output_cases 作为回归评测集:
 > 每次修订 skill 后重跑 `scripts/run_trigger_evals.py` / `scripts/run_output_evals.py`,防止质量回退。
 
-仅当约定范围的来源核查、覆盖映射、实际输出评测与交付均完成时，才把 `PIPELINE_STATE.md` 标记为全部完成。参考项说明实际所在文件，待核查项与未实测内容单独列出；不能用收尾模板掩盖缺口。
+仅当约定范围的来源核查、覆盖映射、实际输出评测与交付均完成时，才把 `PIPELINE_STATE.md` 标记为全部完成。状态文件须含阶段台账、参与者登记与关键哈希等结构化字段（模板见 `references/templates/PIPELINE_STATE.md.template`；旧版散文式状态按模板补齐核心字段即可）。参考项说明实际所在文件，待核查项与未实测内容单独列出；不能用收尾模板掩盖缺口。

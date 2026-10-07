@@ -36,7 +36,7 @@ license: Apache-2.0
 
 ## Workflow
 
-严格按顺序执行。开始前先检查 `books/<slug>/PIPELINE_STATE.md` 是否存在: 存在则读取并从记录的阶段续跑;每完成一个阶段就更新该文件,并向用户汇报进度,不要静默跑完。
+严格按顺序执行。开始前先检查 `books/<slug>/PIPELINE_STATE.md` 是否存在: 存在则读取并从记录的阶段续跑;每完成一个阶段就更新该文件,并向用户汇报进度,不要静默跑完。状态文件按 `references/templates/PIPELINE_STATE.md.template` 保持轻量状态契约: 阶段进度、参与者登记 (含 `run_ref`)、独立性登记、关键哈希与重试/回炉计数; 旧版散文式状态可读, 补齐核心字段即可。阶段交接遵循**屏障**: 上一阶段的"阶段完成条件" (见各阶段文档) 未满足时, 不得进入下一阶段。
 
 ```text
 阶段 0:   整书理解 (Adler 四步)  → BOOK_OVERVIEW.md

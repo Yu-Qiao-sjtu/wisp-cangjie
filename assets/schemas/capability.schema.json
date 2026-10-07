@@ -34,7 +34,7 @@
       "description": "晋级为独立 Skill 时使用的 frontmatter 数据（description/tags 等）",
       "properties": {
         "description": { "type": "string" },
-        "tags": { "type": "array", "items": { "type": "string" } }
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "编译为 SKILL.md 顶层 tags：wisp 宿主 search_skills 标签通道（整体 +50 / 逐词 +10）与文献类技能归类（literature 等）" }
       }
     },
     "source_evidence": {

@@ -29,6 +29,17 @@ from distill_common import TOOL_VERSION, load_yaml  # noqa: E402
 
 MD_LINK_RE = re.compile(r"\[([^\]]+)\]\(([^)#\s]+?)(?:#[^)\s]*)?\)")
 
+# ---- wisp-science 宿主元数据（frontmatter 顶层 tags）----
+# tags 进 search_skills 的标签通道（整体 +50 / 逐词 +10）；写坏 YAML flow 列表的字符直接拒绝。
+
+def validate_frontmatter_tags(tags: list) -> None:
+    """顶层 tags 会原样进入 SKILL.md；禁止会破坏 YAML flow 列表的字符。"""
+    for tag in tags:
+        if not isinstance(tag, str) or not tag.strip():
+            raise SystemExit(f"[frontmatter] tags 必须是非空字符串: {tag!r}")
+        if any(ch in tag for ch in ",[]"):
+            raise SystemExit(f"[frontmatter] tag 不能含 , [ ] （flow 列表语法）: {tag!r}")
+
 
 def sanitize_links(text: str, available: set[str]) -> str:
     """把指向未随产物分发文件的相对链接降级为纯文本，避免死链。"""
@@ -106,11 +117,15 @@ def build_entry_md(bundle: dict, variant: str) -> str:
     caps = active_capabilities(bundle)
     book = bundle["book"]
     entrypoint_count = 1 if variant == "single" else 1 + len(promoted_capabilities(bundle))
+    entry_tags = entry.get("tags") or []
+    if entry_tags:
+        validate_frontmatter_tags(entry_tags)
     fm_lines = [
         "---",
         f"name: {entry['name']}",
         "description: |",
         *[f"  {line}" for line in entry["description"].strip().splitlines()],
+        *([f"tags: [{', '.join(entry_tags)}]"] if entry_tags else []),
         "metadata:",
         f"  distill.generated-by: {TOOL_VERSION}",
         f"  distill.variant: {variant}",

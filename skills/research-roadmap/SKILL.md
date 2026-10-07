@@ -1,6 +1,7 @@
 ---
 name: research-roadmap
 description: Draw an editable, Chinese-readable academic technical roadmap (SVG source plus rendered PNG) from a paper, thesis, report, grant application, or research plan. Use when the user asks for 技术路线图, 研究方案流程图, 实验流程图, a technical roadmap of 研究内容/研究方法, or to modify an existing roadmap figure for 论文/报告/基金, optionally imitating a supplied reference figure. Not for molecular-mechanism illustrations, literature-review diagrams, or data plots; use figure-style or figure-composer for data figures.
+tags: [技术路线图, 研究方案流程图, 实验流程图, roadmap, svg]
 license: Apache-2.0
 ---
 

@@ -80,11 +80,12 @@ def capability_resources(bundle_dir: Path, cap: dict) -> dict[str, str]:
     return files
 
 
-def resource_links(cap: dict, prefix: str = "") -> str:
+def resource_links(cap: dict) -> str:
+    """资源链接按 Skill 包根相对路径生成（与 validate_skill_pack.py / wisp store 解析基准一致）。"""
     if not cap.get("resources"):
         return ""
-    lines = ["", "## 配套资源", "", "路径相对于本文件；脚本需先检查运行条件，不因附带而自动执行。", ""]
-    lines.extend(f"- [{rel}]({prefix}{rel})" for rel in cap["resources"])
+    lines = ["", "## 配套资源", "", "路径相对于 Skill 包根；脚本需先检查运行条件，不因附带而自动执行。", ""]
+    lines.extend(f"- [{rel}]({rel})" for rel in cap["resources"])
     return "\n".join(lines) + "\n"
 
 
@@ -219,7 +220,7 @@ def build_tree(bundle_dir: Path, variant: str) -> dict[str, str]:
     for cap in caps:
         files.update(capability_resources(bundle_dir, cap))
         files[f"references/capabilities/{cap['slug']}.md"] = (
-            (bundle_dir / cap["card"]).read_text(encoding="utf-8") + resource_links(cap, "../../"))
+            (bundle_dir / cap["card"]).read_text(encoding="utf-8") + resource_links(cap))
     files["references/capability-index.md"] = build_index_md(caps)
     files["references/cheatsheet.md"] = build_cheatsheet_md(caps, bundle["book"])
     guide = (bundle.get("entry") or {}).get("input_guide")

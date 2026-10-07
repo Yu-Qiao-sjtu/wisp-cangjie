@@ -24,10 +24,11 @@
 
 ### I — Interpretation (自述)
 
-- 用**你自己的话**重写方法论的核心骨架
+- **从母本节点簇编译**方法论的核心骨架: claim 定结论、reasoning 定"为什么",逻辑链展开成段(来源 semantic-map.md,挂在能力条目 chain_refs)
+- 仍然用**你自己的话**表达 — 编译是按逻辑链组织,不是照抄
 - 5–15 行
 - 检查: 读完这段,一个没读过原书的人能否理解这个方法论在做什么? 若不能,重写。
-- 禁止: 照搬原文句子 / 堆砌修辞
+- 禁止: 照搬原文句子 / 堆砌修辞; 也禁止绕开母本自编逻辑链
 
 ### A1 — Application Example（书中案例或明确标记的演练）
 
@@ -66,6 +67,7 @@ A2 的产出直接写入 skill frontmatter 的 `description` 字段 — agent �
 - 说明**输入契约**：必需字段、类型、单位、适用条件；缺失哪些信息应先询问，不能静默猜值。
 - 说明**输出契约**：表格字段/文件格式/结论结构和完成标准。计算类写公式、计算顺序、舍入及容差；原书未规定的实现约定明确标为约定，并验证不改变原意。
 - 流程/排障类保留条件分支、角色或状态、依赖步骤、失败处理；不能为卡片短小截掉必要前置步骤。
+- 步骤骨架与判停点从母本 reasoning 节点推导(chain_refs),不得脱离逻辑链或与母本矛盾。
 
 E 的作用是让 agent 在调用这个 skill 时有明确的执行路径,不是"自由发挥"。
 
@@ -74,6 +76,7 @@ E 的作用是让 agent 在调用这个 skill 时有明确的执行路径,不是
 - 什么时候**不要**使用这个 skill (反场景)
 - 作者在书里警告过的失败模式
 - 来自阶段 0 批判阶段的作者盲点
+- 母本 boundary 节点应完整落位到 B 段(反场景 / 适用条件 / 失败模式),缺项注明原因
 - 与之相邻但容易混淆的其他方法论
 
 B 的作用是**防止乱调用**。没有 B 的 skill,会在不该用的时候被用,反而帮倒忙。
@@ -100,6 +103,7 @@ frontmatter:
 source_evidence:
   - source_id: src-main-book
     location: 第三讲                   # 视频填时间戳/分 P; 论文填章节+图表编号+版本(DOI/arXiv ID)
+chain_refs: [c01, r01]                 # 挂回的语义母本节点(阶段 0.5); I/E/B 的编译来源
 verifiability: reproducible|checkable|subjective  # 论文模式必填, 书籍模式可选; 决定阶段 4 断言强度(见 08-paper-mode.md)
 resources: []                         # 可选，例 resources/input.csv、resources/calculate.py；论文模式的资源锚点可写 resources/paper-map.md
 ```

@@ -5,7 +5,10 @@
 ## 你的输入
 
 - `BOOK_OVERVIEW.md` — 论文骨架与可复现资源清单(阶段 0 产出)
+- `semantic-map.md` — 语义母本(阶段 0.5 产出; 论文模式节点带图表编号与版本锚点)
 - 论文全文 + 补充材料文本(完整或分块)
+
+取材时**先读母本**: 按"该细节实现 / 支撑论文的哪条主张与推理"取材,候选挂回母本节点 (见 `references/methodology/01b-stage0.5-semantic-map.md`)。
 
 ## 你的职责范围 (只找这些)
 
@@ -41,6 +44,7 @@
 - id: rp01
   title: 主模型学习率与批次设置
   type: parameter              # experimental-detail / parameter / protocol / resource-anchor / reproduction-barrier
+  chain_refs: [c01, r01]        # ★ 挂回语义母本节点(阶段 0.5)
   source_location: "Methods §2.3 / Supplementary Table 4"
   source_quote: |
     "..."
@@ -60,6 +64,7 @@
 - [ ] 参数带单位与取值条件; 缺单位或条件的标注缺口,不补造
 - [ ] 资源锚点标许可证与可得性; 不确定的写"未声明"
 - [ ] 复现障碍如实提取,不美化; 与阶段 0 的复现障碍记录交叉核对
+- [ ] 候选已挂回母本逻辑链 (chain_refs ≥ 1,或注明缺口)
 - [ ] **不做筛选** — 宁可多收有依据的候选
 
 ## 数量预期

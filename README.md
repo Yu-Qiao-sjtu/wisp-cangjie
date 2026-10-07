@@ -3,7 +3,7 @@
 
 # Wisp Cangjie
 
-**Distill books, long videos, and podcasts into callable Wisp Skills · The skill factory of the Wisp ecosystem**
+**Distill books, papers, long videos, and podcasts into callable Wisp Skills · The skill factory of the Wisp ecosystem**
 
 `RIA-TV++ distillation pipeline` · `Deterministic compile CLI` · `Wisp house format`
 
@@ -19,7 +19,7 @@
 
 Cangjie — the legendary four-eyed scribe — turned experience into inheritable symbols. Wisp Cangjie turns the methodologies inside long-form content into skills an agent can actually call: it breaks them down into **atomic, agent-invocable capabilities**, then compiles them into the right number of house-format skills and installs them into a Wisp skill directory.
 
-Give it a book, a video transcript, a podcast episode, or a course, and it walks a six-stage pipeline (overview → parallel extraction → triple verification → promotion gate → capability cards → pressure test), then deterministically compiles the result into **one single entry** or **one router entry plus a few promoted skills**. The output is fully format-compatible with the bundled skills of [Wisp Science](https://github.com/xuzhougeng/wisp-science) — drop it into `~/.wisp/skills/` and it is discoverable.
+Give it a book, a research paper, a video transcript, a podcast episode, or a course, and it walks a six-stage pipeline (overview → parallel extraction → triple verification → promotion gate → capability cards → pressure test), then deterministically compiles the result into **one single entry** or **one router entry plus a few promoted skills**. The output is fully format-compatible with the bundled skills of [Wisp Science](https://github.com/xuzhougeng/wisp-science) — drop it into `~/.wisp/skills/` and it is discoverable.
 
 It does not do book summaries, book reviews, or author-persona role-play — only methodologies that can be invoked by an agent in real situations.
 
@@ -33,7 +33,7 @@ Distill this podcast transcript into skills: <path>
 Turn this book into a wisp skill: <book.txt>
 ```
 
-The pipeline supports resume-from-checkpoint (`PIPELINE_STATE.md`), three user confirmation gates (book skeleton / shortlist / output mode), and 8 hard quality gates. Deliverables ship with regression eval cases (`test-prompts.json` / `output_cases`) so later revisions can re-run the evals and prevent quality drift.
+The pipeline supports resume-from-checkpoint (`PIPELINE_STATE.md`), three user confirmation gates (book skeleton / shortlist / output mode), and 9 hard quality gates. Deliverables ship with regression eval cases (`test-prompts.json` / `output_cases`) so later revisions can re-run the evals and prevent quality drift.
 
 ## Installation
 
@@ -56,13 +56,13 @@ The manual is layered — go deeper only as needed:
 | Layer | File | Audience | Content |
 | --- | --- | --- | --- |
 | ① Project handbook | `README.md` (this file) | Users | What it is, how to install, how to trigger, ecosystem position |
-| ② Skill entry | `SKILL.md` | The Wisp agent | When to use, inputs, six-stage workflow, 8 hard gates, boundaries. **This is what the runtime loads** |
-| ③ Stage SOPs | `references/methodology/` (9 docs) | The Wisp agent | Per-stage details: Adler overview, 5 parallel extractors, triple verification, promotion gate, RIA++ capability cards, pressure test, delivery |
+| ② Skill entry | `SKILL.md` | The Wisp agent | When to use, inputs (incl. source-type routing: paper vs. book mode), six-stage workflow, 9 hard gates, boundaries. **This is what the runtime loads** |
+| ③ Stage SOPs | `references/methodology/` (10 docs) | The Wisp agent | Per-stage details: Adler overview, parallel extractors (5 book-mode + 1 paper-mode), triple verification, promotion gate, RIA++ capability cards, pressure test, delivery, and the paper-mode overlay (08) |
 
 Also see:
 
 - `docs/TUTORIAL.en.md` — **start here**: a first-distillation walkthrough from zero to installed;
-- `references/extractors/` — 5 extractor prompts (framework / principle / case / counter-example / glossary);
+- `references/extractors/` — 6 extractor prompts (framework / principle / case / counter-example / glossary + paper-mode reproducibility);
 - `references/templates/` — output templates for each stage;
 - `scripts/distill.py` — deterministic CLI (`doctor` / `compile` / `replan-output` / `update` / `repair` / `rollback` / `eval`); run `python scripts/distill.py --help`;
 - `validation/README.md` — how to validate this package with the Wisp Science test suite.
@@ -93,7 +93,7 @@ books/<slug>/
     └── destinations.json      # promoted / router destination map
 ```
 
-Deliverables are sanitized: full provenance (book title, author, chapter titles, verbatim quotes) stays only in the local `books/<slug>/` audit trail — installed or published output never reveals the source document's identity.
+Deliverables are sanitized in book mode: full provenance (book title, author, chapter titles, verbatim quotes) stays only in the local `books/<slug>/` audit trail — installed or published output never reveals the source document's identity. In paper mode, academic citation anchors (title / authors / year / DOI / journal / figure numbers) may ship with the output instead, while the full text, supplementary materials, and figures are never redistributed.
 
 ## Wisp Skill ecosystem
 
@@ -103,7 +103,7 @@ Wisp Cangjie is the "skill factory" of the [Wisp](https://github.com/xuzhougeng)
 | --- | --- | --- |
 | Research workbench | [wisp-science](https://github.com/xuzhougeng/wisp-science) | Local-first desktop AI research workbench: Python/R, MCP bioinformatics tools, SSH/WSL/GPU runtimes, skill store and packaging spec |
 | Terminal workspace | [wispterm](https://github.com/xuzhougeng/wispterm) | Cross-platform terminal workspace (libghostty-vt) for remote development and AI agent workflows |
-| Skill factory | **wisp-cangjie** (this repo) | Distills books / videos / podcasts into installable Wisp skills |
+| Skill factory | **wisp-cangjie** (this repo) | Distills books / papers / videos / podcasts into installable Wisp skills |
 | Example skills | **research-roadmap (bundled in this repo, see `skills/`)**, manuscript-polish, nsfc-grant-writing, signaling-pathway-atlas | Same house format, installed locally |
 
 The `skills/` directory ships a field-tested ecosystem skill. Install it by copying:
@@ -113,7 +113,7 @@ cp -r skills/research-roadmap ~/.wisp/skills/
 ```
 
 - **research-roadmap** — draws academic technical roadmaps for papers, reports, and grant applications (SVG + PNG, editable PPT / draw.io on demand).
-  Hard routing rules (direct links for adjacent cards, orthogonal buses, shared main axis) are enforced by the bundled checker `scripts/check_graph.py`;
+  Hard routing rules (direct links for adjacent cards, orthogonal buses, shared main axis) are enforced by the bundled checker `skills/research-roadmap/scripts/check_graph.py`;
   see [`docs/technical-roadmap-experience.zh-CN.md`](docs/technical-roadmap-experience.zh-CN.md) for the methodology and the rework lessons behind it.
 
 Every distilled skill ships with `SKILL.md` + `references/` + `scripts/` — drop it into `~/.wisp/skills/` and it joins the ecosystem. The more you distill, the richer it grows.
@@ -124,8 +124,8 @@ Every distilled skill ships with `SKILL.md` + `references/` + `scripts/` — dro
 wisp-cangjie/
 ├── SKILL.md                   # skill entry (When to use / Inputs / Workflow / Boundaries)
 ├── references/
-│   ├── methodology/           # six-stage SOPs (00-overview + 01~07)
-│   ├── extractors/            # 5 parallel extractor prompts
+│   ├── methodology/           # six-stage SOPs (00-overview + 01~07 + 08 paper-mode)
+│   ├── extractors/            # 5 book-mode (+1 paper-mode) extractor prompts
 │   └── templates/             # output templates
 ├── scripts/                   # distill.py compile/eval/update/repair/rollback CLI + 15 deterministic scripts
 └── assets/

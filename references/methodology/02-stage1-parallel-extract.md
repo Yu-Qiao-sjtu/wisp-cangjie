@@ -1,4 +1,4 @@
-# 阶段 1 — 5 个 sub-agent 并行提取
+# 阶段 1 — 并行提取（书籍模式 5 个 / 论文模式 5+1 个 sub-agent）
 
 ## 目标
 
@@ -10,14 +10,16 @@
 - **速度**: 宿主支持并行 sub-agent 时一次并发完成,不用白不用。
 - **独立性**: 每个 extractor 独立判断，减少相互带偏；多个 extractor 提到同一原文不等于多份独立证据
 
-## 5 个 sub-agent
+## sub-agent 清单（书籍模式 5 个 / 论文模式 5+1 个）
 
 每个 sub-agent 接收:
 - `BOOK_OVERVIEW.md` (阶段 0 产出, 提供全局上下文)
 - 书本文本 (或文本路径)
 - 对应的 extractor prompt (`references/extractors/<type>-extractor.md`)
 
-并在一次调用中 **同时 spawn 5 个** sub-agent,不是串行。
+并在一次调用中 **同时 spawn 全部 sub-agent**,不是串行。
+论文模式(源类型判定见 `SKILL.md` Inputs,差异见 `08-paper-mode.md`)额外激活第 6 个"可复现性提取器"
+`references/extractors/reproducibility-extractor.md` → `candidates/reproducibility.md`,与其余 5 个并行。
 
 **降级方案**: 当前环境不支持并行 sub-agent 时,用同样 5 个 extractor prompt 串行执行 (每次以"干净视角"执行一个 extractor 的职责,不带上一个 extractor 的判断),产出格式不变。
 
@@ -33,6 +35,7 @@
 | case | 案例是局部命中型,有明确文本锚点 | 检索式取块 |
 | counter-example | 反例是局部命中型,有明确警告性措辞 | 检索式取块 |
 | glossary | 术语是局部命中型,可先用确定性方法预筛 | 检索式取块 + 脚本预筛 |
+| reproducibility (论文模式) | 方法/资源锚点局部命中型 | 检索式取块 + 表格预筛 |
 
 **检索式取块的前置条件**: 先用确定性脚本建好内容地图 —
 `python scripts/build_chunks.py <源文件> --out books/<slug>/.distill/` 生成结构感知块,
@@ -40,7 +43,7 @@
 检索式 extractor 的流程: 关键词召回相关块 → 取邻接块防断章取义 → 证据不足时扩大窗口 →
 候选需回原文核验。五个 extractor 仍使用独立任务上下文,独立判断不变。
 
-**覆盖率硬门**: 同时对照全量扫描候选池与阶段 0 原书关键任务清单；不能只用旧版三重验证的通过项作分母。
+**覆盖率硬门**: 同时对照全量扫描候选池与阶段 0 关键任务清单(书籍=原书任务清单,论文=贡献→任务清单)；不能只用旧版三重验证的通过项作分母。
 对重要任务逐项标记“有候选/有依据降为参考/待核查/确有遗漏”。未解释遗漏先扩大窗口，仍漏则退回全量扫描；待核查不计作已覆盖的可执行能力。每次改动检索策略都重跑覆盖对比。
 
 ## 长文本分块策略 (超出单个 sub-agent 上下文时)
@@ -60,6 +63,7 @@
 | 3 | case-extractor | 书中亲历/转述案例、例题，区分性质 | `candidates/cases.md` |
 | 4 | counter-example-extractor | 作者警告的失败 / 反例 / 陷阱 | `candidates/counter-examples.md` |
 | 5 | glossary-extractor | 关键概念词典 | `candidates/glossary.md` |
+| 6 | reproducibility-extractor (论文模式) | 实验条件 / 参数 / 协议 / 资源锚点 / 复现障碍 | `candidates/reproducibility.md` |
 
 ## 每个候选单元的最小字段
 

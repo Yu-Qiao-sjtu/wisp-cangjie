@@ -37,6 +37,10 @@
         "source_pack": {
           "type": "string"
         },
+        "source_type": {
+          "enum": ["book", "long-content", "paper"],
+          "description": "源类型：paper=论文模式（references/methodology/08-paper-mode.md）；book/long-content=书籍模式。缺省视为书籍模式。"
+        },
         "baseline_tag": {
           "type": "string"
         }

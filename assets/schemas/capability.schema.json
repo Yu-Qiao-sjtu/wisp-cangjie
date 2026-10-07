@@ -29,6 +29,10 @@
       "items": { "type": "string", "pattern": "^resources/(?:[A-Za-z0-9_-]+/)*[A-Za-z0-9_-]+(?:\\.[A-Za-z0-9_-]+)*$" },
       "default": []
     },
+    "verifiability": {
+      "enum": ["reproducible", "checkable", "subjective"],
+      "description": "可验证性分级（论文模式必填，其余模式可选）：reproducible=附带可执行工件可机械复现；checkable=有明确数值/图表/清单可逐项核对；subjective=判断类只能语义评审。决定阶段 4 断言强度，见 references/methodology/08-paper-mode.md。"
+    },
     "frontmatter": {
       "type": "object",
       "description": "晋级为独立 Skill 时使用的 frontmatter 数据（description/tags/wisp 等）",

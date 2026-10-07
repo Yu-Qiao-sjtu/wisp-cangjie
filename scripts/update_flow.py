@@ -105,15 +105,21 @@ def run_update(pack: Path, new_source: Path) -> int:
                "按 `references/methodology/` 合并规则逐项处理（CLI 不做语义判断）：", ""]
     need_confirm = [c for c in changes if c.get("requires_human_confirmation")]
     additive = [c for c in changes if c["change_type"] == "additive"]
+    unchanged_count = change_set["summary"]["unchanged"]
+    steps: list[str] = []
     if additive:
-        pending.append(f"1. **增量候选提取**：对 {len(additive)} 个新增块跑阶段 1（可用检索式取块），"
-                       "新候选走阶段 1.5 三重验证 → 阶段 1.6 晋级门 → 更新 Bundle；")
+        steps.append(f"**增量候选提取**：对 {len(additive)} 个新增块跑阶段 1（可用检索式取块），"
+                     "新候选走阶段 1.5 三重验证 → 阶段 1.6 晋级门 → 更新 Bundle；")
     if need_confirm:
-        pending.append(f"2. **人工确认项（{len(need_confirm)}）**：modified/deletion 块需定性 "
-                       "correction / contradiction / near_duplicate，冲突不得静默综合；")
-    pending += ["3. Bundle 更新后运行 `distill.py compile`（沿用原输出策略）重编译受影响入口；",
-                "4. 运行受影响能力 + 邻居能力的回归评测（见影响分析报告）。", "",
-                "> 未受影响的能力/入口不重编译，文件哈希保持不变。"]
+        steps.append(f"**人工确认项（{len(need_confirm)}）**：modified/deletion 块需定性 "
+                     "correction / contradiction / near_duplicate，冲突不得静默综合；")
+    if unchanged_count:
+        steps.append(f"**未变更块按 content_hash 复用**：{unchanged_count} 个哈希未变的块不重跑阶段 1/1.5/1.6，"
+                     "既有候选、审查决策与 verifiability 定级按块哈希直接沿用；只有新增/修改块进入增量提取与复核；")
+    steps.append("Bundle 更新后运行 `distill.py compile`（沿用原输出策略）重编译受影响入口；")
+    steps.append("运行受影响能力 + 邻居能力的回归评测（见影响分析报告）。")
+    pending += [f"{i}. {text}" for i, text in enumerate(steps, 1)]
+    pending += ["", "> 未受影响的能力/入口不重编译，文件哈希保持不变；未变更块不重审是设计行为，不是遗漏。"]
     (workdir / "pending-tasks.md").write_text("\n".join(pending) + "\n", encoding="utf-8")
 
     print(report)

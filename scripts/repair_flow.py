@@ -77,7 +77,9 @@ def run_repair(pack: Path, case_path: Path) -> int:
    `python scripts/apply_skill_patch.py apply --target <skill-dir> --patch-dir {workdir}/patch --snapshots {sidecar}/snapshots` 落盘；
 4. **防过拟合**：不把失败案例专有名词原样塞进 description；每修一个正例至少补一个语义近邻负例；
 5. **回归**：目标失败案例 + 该 skill 全部回归 + 相邻 skill 混淆回归（run_trigger_evals.py 判分，validation 集在选版前保持隐藏）；
-6. 通过后写 changelog；任何一步失败用 restore 回滚快照。
+6. **修复预算（fail-closed）**：同一 failure case 最多 6 次修复尝试（一次"补丁 → 回归"记一次）；达上限仍不通过即停止，把未解决失败与每轮尝试摘要写入 `{workdir}/unresolved.md` 请用户裁决排除或降级，不得带病发布；
+7. **尝试历史不覆盖**：每轮尝试的补丁与回归结果单独落盘 `{workdir}/attempt-<N>/`，新尝试不覆盖旧记录，事后可审计每轮引入了什么变化；
+8. 通过后写 changelog；任何一步失败用 restore 回滚快照。
 
 > preprocessing_gap 不要修 Skill 文案，去修上游解析；eval_gap 去修测试并记录理由。
 """

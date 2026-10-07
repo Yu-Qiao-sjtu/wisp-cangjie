@@ -1,11 +1,22 @@
 # Changelog
 
+## 1.2.0 — 2026-10-07
+
+- **论文成为一等源类型（论文模式 v2.3）**：新增 `references/methodology/08-paper-mode.md` 差异层 SOP — 阶段 0 论文结构理解（IMRaD 骨架 + 可复现资源清单）、阶段 1 的 5+1 提取器、阶段 4 断言分级与复现/泛化双极查询、阶段 5 学术引用规范替代脱敏。书籍模式（书/视频/播客/课程等长内容）默认流程不变。
+- 新增论文模式第 6 提取器 `references/extractors/reproducibility-extractor.md`（实验条件/参数/协议/资源锚点/复现障碍）。
+- Capability Bundle 新增可选字段 `book.source_type`（book / long-content / paper）；能力卡新增可选 `verifiability` 分级（reproducible / checkable / subjective）——均为可选，旧 Bundle 向后兼容。
+- 阶段 4 压力测试增强：捷径检测清单（输入真被使用 / 产物隔离 / 硬编码检测 / 边界判停）、断言强度按 verifiability 分级、回炉预算 2 轮（超限降级 router/参考并记录，不带病发布）。
+- `repair` 流加入修复预算（同一 failure case 最多 6 次尝试，超限 fail-closed 写入 `unresolved.md` 请用户裁决）与尝试历史分目录留痕（`attempt-<N>/`）。
+- `update` 流按 content_hash 复用未变更块的既有审查决策（不重跑阶段 1/1.5/1.6），只有新增/修改块进入增量提取。
+- 阶段 5 交付前合规复核分模式（书籍=脱敏清单 / 论文=学术引用规范）；安装冒烟改为从安装位置本身执行，冒烟 prompt 与结果进收尾汇报。
+- `TOOL_VERSION` 升至 `wisp-cangjie v1.2.0`。
+
 ## 1.1.0 — 2026-09-15
 
-- 附带生态技能 `skills/research-roadmap/`：论文／报告／基金技术路线图绘制（SVG + PNG，按需可编辑 PPT / draw.io）。布线硬规则由随附 `scripts/check_graph.py` 强制（多段路由斜向段＝ERROR、短间距拐弯＝WARN）。
+- 附带生态技能 `skills/research-roadmap/`：论文／报告／基金技术路线图绘制（SVG + PNG，按需可编辑 PPT / draw.io）。布线硬规则由随附 `skills/research-roadmap/scripts/check_graph.py` 强制（多段路由斜向段＝ERROR、短间距拐弯＝WARN）。
 - 新增 `docs/technical-roadmap-experience.zh-CN.md`：一次真实基金技术路线图交付的完整返工教训与固化规则对照。
 - research-roadmap 增补模型能力要求：验收门**必须有视觉能力模型**（如 GPT-5.6-sol／High，以能力为准不绑定型号）；纯文本模型只能交付标注"未完成视觉验收"的 SVG。
-- 新增 `references/style-defaults.md` 集中默认模板规格（SVG 配色字号、PPT 双字体 10 号／A4 页面／无阴影等），用户模板按提取协议覆盖，未覆盖项回退默认值。
+- 新增 `skills/research-roadmap/references/style-defaults.md` 集中默认模板规格（SVG 配色字号、PPT 双字体 10 号／A4 页面／无阴影等），用户模板按提取协议覆盖，未覆盖项回退默认值。
 
 ## 1.0.0 — 2026-09-15
 

@@ -99,8 +99,9 @@ frontmatter:
   tags: [decision, mental-model]
 source_evidence:
   - source_id: src-main-book
-    location: 第三讲                   # 视频填时间戳/分 P
-resources: []                         # 可选，例 resources/input.csv、resources/calculate.py
+    location: 第三讲                   # 视频填时间戳/分 P; 论文填章节+图表编号+版本(DOI/arXiv ID)
+verifiability: reproducible|checkable|subjective  # 论文模式必填, 书籍模式可选; 决定阶段 4 断言强度(见 08-paper-mode.md)
+resources: []                         # 可选，例 resources/input.csv、resources/calculate.py；论文模式的资源锚点可写 resources/paper-map.md
 ```
 
 来源信息由 `source_evidence` 承载，并在卡片 R 段写明。编译器只写其实现支持的 `metadata.distill.*` 字段，不把未输出的来源定位宣称为已写入 frontmatter。
@@ -108,6 +109,7 @@ resources: []                         # 可选，例 resources/input.csv、resou
 ## 配套资源（需要时才添加）
 
 - 把需随包交付的脚本、CSV/JSON/Markdown 模板放到 Bundle 的 `resources/`，在能力的 `resources` 列表逐个声明；不声明的文件不会被打包。
+- 论文模式的资源锚点（数据集/代码/工具链接与许可证）以 `resources/paper-map.md` 登记，只登记链接与说明，不分发受版权保护的全文/图表文件（见 `08-paper-mode.md`）。
 - 当前支持 UTF-8 文本，路径用英文/数字/连字符/下划线，可分目录；不支持二进制文件、符号链接或越界路径。
 - single/router 携带全部 active 能力声明的资源；晋级 Skill 携带自身声明资源，编译器追加可点击的相对路径资源清单。
 - 卡片正文用资源名称说明用途，避免手写因 single/pack 目录深度不同而失效的相对链接；以编译器生成清单定位文件。

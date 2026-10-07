@@ -55,14 +55,22 @@
 ### L3 — 锚点全覆盖机械检查（脚本）
 
 ```sh
+# 单源（向后兼容）
 python scripts/check_semantic_fidelity.py <semantic-map.md> \
     --source <源文文件> --candidates <候选目录> --verified <verified.md>
+
+# 多源（v1.6；多来源项目）：位置参数给多份母本（每来源一份），
+# --source 重复出现、按序一一配对；单个 --source 值可用英文逗号连接
+# 多个源文文件（“一集多帖”合并回查）
+python scripts/check_semantic_fidelity.py <map-1.md> <map-2.md> ... \
+    --source <源-1文件> --source <源-2文件> ... \
+    --candidates <候选目录> --verified <verified.md>
 ```
 
 - **层 A 母本结构**（按 `assets/schemas/semantic-map.schema.json`）：字段 / 枚举 / links 目标存在 / 每节点有 location / explicit 引文非空且 ≤150 字 / claim 关联 ≥1 evidence 或显式 missing；
-- **层 B 锚点可回查**：引文归一化后回查源文（拼接引用按分隔符分段核验，报告 n/m 段命中）；
-- **层 C 候选挂链**：带 `chain_refs` 的候选引用必须指向存在节点；`decision=verified` 的候选必须挂回母本 ≥1 节点（v2.4 链位置核查的机械部分）。
-- 退出码：0 = 无 ERROR；1 = 存在 ERROR；2 = 输入无效。**运行时机**：阶段 1.5 产出后跑一次（含 `--candidates --verified`）；进入阶段 5 前再跑一次（屏障检查）；
+- **层 B 锚点可回查**：引文归一化后回查源文（拼接引用按分隔符分段核验，报告 n/m 段命中）；单 `--source` 值内以英文逗号连接的多个源文文件先合并再回查（供“一集多帖 / 多版本渲染”的单一来源合并核验）；多母本时按序逐份报告、末行给合计；
+- **层 C 候选挂链**：带 `chain_refs` 的候选引用必须指向存在节点；`decision=verified` 的候选必须挂回母本 ≥1 节点（v2.4 链位置核查的机械部分）；**多母本来源级校验**：候选带 `source_id` 时 `chain_refs` 只许指向该来源母本的节点，指向他源节点记「跨源挂链」ERROR；无 `source_id` 时回退全量并集校验（报告计数），`source_id` 无对应母本时记 WARN 并回退并集。
+- 退出码：0 = 无 ERROR；1 = 存在 ERROR；2 = 输入无效。**运行时机**：阶段 1.5 产出后跑一次（含 `--candidates --verified`）；进入阶段 5 前再跑一次（屏障检查）；多来源项目用多母本模式一次连查（每份母本按序配对各自 `--source`）。
 - 历史项目回填：对无 `chain_refs` 的旧产物，脚本输出的缺链清单即整改清单——补链后重跑，或按 `03-stage1.5` 规则转 `needs_review`；
 - 非严格 YAML 的历史记录：脚本按宽容规则抢救解析并记 WARN；新产物应直接写严格 YAML（值内含冒号时加引号）。
 

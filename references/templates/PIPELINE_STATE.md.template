@@ -1,0 +1,60 @@
+# PIPELINE_STATE — {{SLUG}}
+
+> 本文件是流水线的**轻量状态契约**: 每完成一个阶段就地更新, 供续跑核对与进度汇报。
+> 结构化字段（阶段进度 / 参与者登记 / 独立性登记 / 关键哈希）必须保留; 说明性备注可自由补充。
+
+## 基本信息
+
+- **slug**: {{SLUG}}
+- **源内容**: {{ 内容名称 / 出处 }}
+- **源文件**: {{SOURCE_FILES}}
+- **使用目的**: {{ 学习查阅（single）/ 接入工作流（pack）/ 未定 }}
+- **首次试点**: {{ 是 / 否 }}
+
+## 阶段进度
+
+| 阶段 | 状态 | 产出 | 时间 |
+|---|---|---|---|
+| 0 整书理解 (Adler) | {{todo / doing / done}} | BOOK_OVERVIEW.md | {{ }} |
+| 0.5 语义母本 | {{ }} | semantic-map.md | {{ }} |
+| 1 并行提取 | {{ }} | candidates/（含各提取器文件） | {{ }} |
+| 1.5 三重验证 | {{ }} | verified.md + references.md + needs-review.md + rejected/ + coverage-audit.md | {{ }} |
+| 1.6 晋级门 | {{ }} | promotion-review.md + .distill/capabilities/{verified.yaml, destinations.json} | {{ }} |
+| 2 RIA++ 能力卡 | {{ }} | .distill/capabilities/cards/ | {{ }} |
+| 3 Zettelkasten 链接 | {{ }} | also_read + GLOSSARY.md | {{ }} |
+| 4 压力测试 | {{ }} | evals/ + test-prompts.json + test-results.md | {{ }} |
+| 5 编译交付 | {{ }} | dist/<slug>/ + DIGEST.md + 安装记录 | {{ }} |
+
+## 参与者登记
+
+每个 sub-agent 运行前由主流程分配 `run_ref`（格式 `s<阶段>-<角色>-<YYYYMMDDTHHMM>-<4位小写十六进制>`，产出首行回显）；完成后登记到本表（分配与所有权规则见 `02-stage1-parallel-extract.md`）。
+
+| 角色 | run_ref | 产物 / 任务 | 时间 |
+|---|---|---|---|
+| {{framework-extractor}} | {{s1-framework-20261007T1430-k3f9}} | {{candidates/frameworks.md}} | {{ }} |
+
+## 独立性登记
+
+（阶段 4 盲测完成后填写；核对规则见 `06-stage4-pressure-test.md`）
+
+- **blind_run_refs**: {{ 使用 would_trigger 的验证 run_ref 列表 }}
+- **distiller_run_refs**: {{ 参与蒸馏/提取的 run_ref 列表 }}
+- **independence_check**: {{ pass / fail / fallback:原因 }}
+- **fallback**: {{ 无 / 说明 }}
+
+## 重试与回炉
+
+- **修复预算**: {{ repair 已尝试次数 / 6；超限时见 unresolved.md }}
+- **回炉预算**: {{ 各能力回炉轮次 / 2；超限降级 router 或参考 }}
+- **未决事项**: {{ 无 / 说明 }}
+
+## 关键哈希（续跑核对）
+
+- **来源**: `sha256:{{ ... }}`（来源变更时按 `scripts/diff_sources.py` 流程处理）
+- **编译登记**: {{ dist/<slug>/ 内 BUILD_MANIFEST.json 的发布哈希与 run id }}
+
+## 备注
+
+- {{ 用户确认门记录（阶段 0 骨架 / 阶段 1.5 入选名单 / 阶段 5 输出模式）}}
+- {{ 降级与偏离说明（如: 宿主不支持并行 sub-agent 时的降级）}}
+- {{ 其他需要续跑者知道的事 }}

@@ -16,12 +16,20 @@
 - `BOOK_OVERVIEW.md` (阶段 0 产出, 提供全局上下文)
 - 书本文本 (或文本路径)
 - 对应的 extractor prompt (`references/extractors/<type>-extractor.md`)
+- `run_ref` (主流程分配的唯一标识; 格式与核对规则见 `06-stage4-pressure-test.md` 的“独立性登记”; 产出/回答首行回显)
 
 并在一次调用中 **同时 spawn 全部 sub-agent**,不是串行。
 论文模式(源类型判定见 `SKILL.md` Inputs,差异见 `08-paper-mode.md`)额外激活第 6 个"可复现性提取器"
 `references/extractors/reproducibility-extractor.md` → `candidates/reproducibility.md`,与其余 5 个并行。
 
 **降级方案**: 当前环境不支持并行 sub-agent 时,用同样 5 个 extractor prompt 串行执行 (每次以"干净视角"执行一个 extractor 的职责,不带上一个 extractor 的判断),产出格式不变。
+
+## 所有权与共享文件（并行纪律）
+
+- **独占产出**: 每个 extractor 只写自己的产出文件 (`candidates/<type>.md`),不得改写其他 extractor 的产物,也不得改写其他阶段产物;
+- **单一合并方**: 共享文件 (`PIPELINE_STATE.md` 等状态/登记类文件) 仅由主流程写入;并行提取期间,主流程不代写任何单个 extractor 的产出;
+- **串行合并**: 全部 extractor 完成后,由主流程 (唯一合并方) 按阶段 1.5 步骤 1 串行执行合并与去重;不在并行期间边收边并;
+- **归属登记**: 每个 extractor 的 `run_ref` 与产出路径登记进 `PIPELINE_STATE.md` 的“参与者登记”区 (run_ref 机制见 `06-stage4-pressure-test.md` 的“独立性登记”)。
 
 ## 按 extractor 类型分化的上下文策略（v2.2）
 
@@ -88,6 +96,16 @@ task_ids: [task-01]               # 对应 overview 的任务；无对应时解�
 1. 这个单元**在书中**有明确根据吗? (不是我脑补)
 2. 它属于我这个 extractor 的职责范围吗? (不要越界)
 3. 它是不是已经在别处被别的 extractor 提取过了? (重复不是问题,阶段 1.5 会合并)
+
+## 阶段完成条件（屏障）
+
+以下条件全部满足前，不得进入阶段 1.5：
+
+- 全部已激活 extractor（书籍 5 / 论文模式 6）完成提取，各自的 `candidates/<type>.md` 已产出；长文本时块间汇总已完成；
+- 候选满足最小字段（含 source 锚点与 `task_ids`）；
+- 覆盖率硬门对比完成（对照阶段 0 任务清单），无未解释遗漏（或已按规则回退全量扫描）。
+
+**屏障语义**: 阶段内可并行，跨阶段严格等待——不以“多数完成”近似替代“全部完成”。
 
 ## 不在本阶段做的事
 
